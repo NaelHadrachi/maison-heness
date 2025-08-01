@@ -1,0 +1,124 @@
+/* Footer.css */
+.footer {
+  background-color: #5c3a21;
+  color: #f8f1e5;
+  padding: 3rem 1rem 1.5rem;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.footer-column {
+  padding: 0 1rem;
+}
+
+.footer-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #d2b48c;
+  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+}
+
+.footer-title::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 50%;
+  height: 2px;
+  background-color: #c8a97e;
+}
+
+.footer-subtitle {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #d2b48c;
+  margin-bottom: 1.2rem;
+}
+
+.footer-text {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.footer-contact-list {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-contact-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  font-size: 0.9rem;
+}
+
+.footer-icon {
+  margin-right: 0.8rem;
+  color: #c8a97e;
+  min-width: 20px;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-link {
+  color: #f8f1e5;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(200, 169, 126, 0.2);
+}
+
+.social-link:hover {
+  color: #c8a97e;
+  background-color: rgba(200, 169, 126, 0.3);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(200, 169, 126, 0.2);
+  padding-top: 1.5rem;
+  text-align: center;
+}
+
+.copyright {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .footer-column {
+    padding: 0;
+    margin-bottom: 1.5rem;
+  }
+  
+  .footer-column:last-child {
+    margin-bottom: 0;
+  }
+}

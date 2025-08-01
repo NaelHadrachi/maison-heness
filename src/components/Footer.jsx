@@ -1,7 +1,58 @@
-export default function Footer() {
+import React from 'react';
+import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaInstagram, FaFacebook } from 'react-icons/fa';
+import './Footer.css';
+
+const Footer = () => {
   return (
-    <footer style={{ backgroundColor: '#6a4e23', color: '#fff', padding: '1em', textAlign: 'center', marginTop: '40px' }}>
-      <p>&copy; 2025 Maison Heness - Tous droits réservés</p>
+    <footer className="footer">
+      <div className="footer-container">
+        <div className="footer-grid">
+          <div className="footer-column">
+            <h3 className="footer-title">Maison Heness</h3>
+            <p className="footer-text">
+              Une maison d'hôtes chaleureuse au cœur de Lourdes, alliant confort moderne et charme traditionnel.
+            </p>
+          </div>
+
+          <div className="footer-column">
+            <h4 className="footer-subtitle">Contact</h4>
+            <ul className="footer-contact-list">
+              <li>
+                <FaMapMarkerAlt className="footer-icon" />
+                <span>31 rue de la Grotte, Lourdes</span>
+              </li>
+              <li>
+                <FaPhone className="footer-icon" />
+                <span>06 89 42 64 38</span>
+              </li>
+              <li>
+                <FaEnvelope className="footer-icon" />
+                <span>maison.heness@yahoo.fr</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="footer-column">
+            <h4 className="footer-subtitle">Réseaux sociaux</h4>
+            <div className="social-links">
+              <a href="#" aria-label="Instagram" className="social-link">
+                <FaInstagram />
+              </a>
+              <a href="#" aria-label="Facebook" className="social-link">
+                <FaFacebook />
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <p className="copyright">
+            &copy; {new Date().getFullYear()} Maison Heness. Tous droits réservés.
+          </p>
+        </div>
+      </div>
     </footer>
   );
-}
+};
+
+export default Footer;

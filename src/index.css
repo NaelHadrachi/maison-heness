@@ -15,7 +15,7 @@
 }
 
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', sans-serif , 'Montserrat';
   background-color: var(--beige);
   color: var(--noir);
   line-height: 1.6;
