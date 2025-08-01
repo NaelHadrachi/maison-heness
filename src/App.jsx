@@ -1,20 +1,20 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Home from './pages/Home';
-import Boutique from './pages/Boutique';
-import ProductDetail from './pages/ProductDetail';
-import Contact from './pages/Contact';
-import Vinaigrerie from './pages/Vinaigrerie';
-import Recettes from './pages/Recettes';
-import NotreHistoire from './pages/NotreHistoire';
+import Home from './pages/Home/Home';
+import Boutique from './pages/Boutique/Boutique';
+import ProductDetail from './pages/ProductDetail/ProductDetail';
+import Contact from './pages/Contact/Contact';
+import Vinaigrerie from './pages/Vinaigrerie/Vinaigrerie';
+import Recettes from './pages/Recettes/Recettes';
+import NotreHistoire from './pages/NotreHistoire/NotreHistoire';
 
 function App() {
   return (
     <Router>
       <div className="app">
         <Navbar />
-        <div style={{ flex: 1 }}>
+        <main className="content">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/boutique" element={<Boutique />} />
@@ -24,7 +24,7 @@ function App() {
             <Route path="/recettes" element={<Recettes />} />
             <Route path="/notre-histoire" element={<NotreHistoire />} />
           </Routes>
-        </div>
+        </main>
         <Footer />
       </div>
     </Router>

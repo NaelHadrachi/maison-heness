@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import produits from '../data/produits';
+import produits from '../../data/produits';
 
 const Boutique = () => (
   <main style={{ padding: '2rem' }}>
