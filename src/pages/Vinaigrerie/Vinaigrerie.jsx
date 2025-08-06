@@ -9,7 +9,7 @@ const Vinaigrerie = () => {
         <div className="vg-header-content">
           <h1 className="vg-title">La Vinaigrerie de Lourdes</h1>
           <div className="vg-header-line"></div>
-          <p className="vg-subtitle">Artisanat vinaigrier depuis 1987</p>
+          <p className="vg-subtitle">Sanctuaire des saveurs depuis 1987</p>
         </div>
       </header>
 
@@ -17,7 +17,7 @@ const Vinaigrerie = () => {
       <div className="vg-hero-image">
         <img 
           src="/images/vinaigrerie/MaisonHeness11.jpg" 
-          alt="La Maison Heness - Vinaigrerie artisanale" 
+          alt="La Vinaigrerie de Lourdes - Sanctuaire des saveurs" 
           loading="lazy"
         />
       </div>
@@ -26,31 +26,47 @@ const Vinaigrerie = () => {
       <main className="vg-main">
         {/* Section d'introduction */}
         <section className="vg-intro">
-          <h2>L'excellence du vinaigre artisanal</h2>
+          <h2>Un produit vivant, une émotion liquide</h2>
           <p>
-            Nichée au cœur de Lourdes, notre vinaigrerie perpétue un savoir-faire ancestral 
-            pour créer des vinaigres d'exception aux arômes uniques.
+            Ce que nous vous proposons dépasse le simple goût : c'est une expérience sensorielle 
+            et intime, où l'on redécouvre tout ce qu'un vinaigre peut être. Vivant, noble, subtil, 
+            il transforme un plat, éveille une mémoire, fait vibrer les émotions les plus fines.
           </p>
         </section>
 
         {/* Grille de services */}
         <div className="vg-services-grid">
           <div className="vg-service-card">
-            <h3>Nos Créations</h3>
+            <h3>Nos Créations Alchimiques</h3>
             <p>
-              Vinaigres vieillis en fûts de chêne, assemblages fruités et compositions 
-              gastronomiques pour sublimer vos plats.
+              Des vinaigres qui racontent des histoires : notre signature, le vinaigre de grenade, 
+              symbole de vitalité, accompagné d'infusions de plantes rares, de macérations fruitées 
+              et d'épices du monde entier.
             </p>
           </div>
 
           <div className="vg-service-card">
-            <h3>Ateliers Découverte</h3>
+            <h3>Expérience Sensorielle</h3>
             <p>
-              Initiation à l'art vinaigrier et dégustations commentées dans notre 
-              atelier historique.
+              Dégustation unique et personnalisée dans notre écrin chaleureux. Chaque vinaigre est 
+              présenté, raconté, goûté, compris. Une révélation pour les papilles et l'âme.
             </p>
           </div>
         </div>
+
+        {/* Section poétique */}
+        <section className="vg-poetic">
+          <p>
+            Il y a des lieux que l'on visite. Et puis, il y a ceux que l'on vit.<br />
+            Notre vinaigrerie n'est ni un simple commerce, ni un atelier ordinaire. C'est un univers, 
+            un sanctuaire des saveurs, niché au cœur de Lourdes — entre pierre et lumière, entre 
+            spiritualité et terre nourricière.
+          </p>
+          <p>
+            Fermez les yeux. Une goutte sur la langue... et c'est un ailleurs qui s'invite. Une 
+            souvenance, une réminiscence d'enfance, une promesse de cuisine sincère et généreuse.
+          </p>
+        </section>
 
         {/* Carte de localisation */}
         <div className="vg-map-wrapper">
@@ -64,8 +80,11 @@ const Vinaigrerie = () => {
 
         {/* Coordonnées */}
         <div className="vg-contact">
-          <p>31 rue de la Grotte • 65100 Lourdes</p>
-          <p>Ouvert du mardi au samedi, 10h-12h30 / 14h-18h</p>
+          <p>📍 31 rue de la Grotte – 65100 Lourdes</p>
+          <p>
+            Que vous soyez curieux, gourmet, amoureux du goût ou simplement de passage à Lourdes : 
+            poussez la porte. Vous repartirez transformé.
+          </p>
         </div>
       </main>
     </div>

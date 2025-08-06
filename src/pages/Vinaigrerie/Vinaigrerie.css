@@ -101,6 +101,22 @@ body {
   color: var(--color-text);
 }
 
+/* Section poétique */
+.vg-poetic {
+  max-width: 800px;
+  margin: 4rem auto;
+  padding: 2rem;
+  text-align: center;
+  font-style: italic;
+  color: var(--color-secondary);
+  line-height: 1.8;
+}
+
+.vg-poetic p {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
 /* Grille de services */
 .vg-services-grid {
   display: grid;
@@ -191,11 +207,20 @@ body {
     font-size: 1.6rem;
   }
   
+  .vg-poetic {
+    padding: 1rem;
+    margin: 2rem auto;
+  }
+  
   .vg-services-grid {
     grid-template-columns: 1fr;
   }
   
   .vg-map-wrapper {
     height: 300px;
+  }
+  
+  .vg-contact {
+    padding: 1rem;
   }
 }
