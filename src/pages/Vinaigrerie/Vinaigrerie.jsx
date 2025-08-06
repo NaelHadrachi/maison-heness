@@ -9,7 +9,6 @@ const Vinaigrerie = () => {
         <div className="vg-header-content">
           <h1 className="vg-title">La Vinaigrerie de Lourdes</h1>
           <div className="vg-header-line"></div>
-          <p className="vg-subtitle">Sanctuaire des saveurs depuis 1987</p>
         </div>
       </header>
 

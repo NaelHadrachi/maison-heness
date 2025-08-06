@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap');
+
+
 :root {
   --color-primary: #2a2118;
   --color-secondary: #8c6a4d;
@@ -27,7 +30,6 @@ body {
   overflow: hidden;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap');
 
 /* En-tête */
 .vg-header {
