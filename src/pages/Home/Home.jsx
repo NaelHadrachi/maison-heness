@@ -1,67 +1,124 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './Home.css'; // Fichier CSS séparé recommandé
+import './Home.css';
 
-const Home = () => (
-  <main className="home-container">
-    {/* Section Hero avec votre photo de magasin */}
-    <section className="hero-section">
-      <img 
-        src="/images/home/magasinhabib.jpeg" 
-        alt="Magasin Maison Heness" 
-        className="hero-image"
-      />
-      <div className="hero-content">
-        <h1>Bienvenue à la Maison Heness</h1>
-        <p className="subtitle">Découvrez nos vinaigres artisanaux d'exception</p>
-        <Link to="/boutique" className="cta-button">Explorer la boutique</Link>
-      </div>
-    </section>
+const Home = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  const slides = [
+    {
+      image: "/images/home/MaisonHeness2.jpg",
+      title: "Maison Heness",
+      subtitle: "Vinaigrerie artisanale d'exception",
+      cta: "Découvrir nos produits"
+    },
+    {
+      image: "/images/home/MaisonHeness20.jpg",
+      title: "Un savoir-faire ancestral",
+      subtitle: "",
+      cta: "Notre histoire"
+    },
+    {
+      image: "/images/home/MaisonHeness4.jpg",
+      title: "Élevage en fûts de chêne",
+      subtitle: "Pour des arômes complexes et subtils",
+      cta: "Visiter notre vinaigrerie"
+    },
+    {
+      image: "/images/home/tonneauvinaigrerie.jpg",
+      title: "Fabrication artisanale",
+      subtitle: "Respect des méthodes traditionnelles",
+      cta: "Notre processus"
+    }
+  ];
 
-    {/* Section Process avec votre photo de tonneau */}
-    <section className="process-section">
-      <div className="process-content">
-        <h2>Notre Savoir-Faire Artisanal</h2>
-        <p>
-           Nous produisons nos vinaigres avec passion selon des méthodes artisanales,
-      en accordant un soin particulier à la sélection des ingrédients et au processus
-      de fabrication. Chaque étape reflète notre engagement envers la qualité.
-        </p>
-        <Link to="/notre-histoire" className="text-link">Notre histoire →</Link>
-      </div>
-      <img 
-        src="/images/home/tonneauvinaigrerie.jpg" 
-        alt="Tonneaux de vieillissement Maison Heness" 
-        className="process-image"
-      />
-    </section>
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [slides.length]);
 
-    {/* Produits phares */}
-    <section className="products-section">
-      <h2>Nos Créations Signature</h2>
-      <div className="products-grid">
-        <div className="product-card">
-          <div className="product-image-placeholder"></div>
-          <h3>Vinaigre de Cidre</h3>
-          <p>Pur jus de pommes normandes fermenté</p>
-          <span className="price">12,50€</span>
+  return (
+    <div className="home-fullpage">
+      {/* Hero Carousel */}
+      <section className="hero-carousel">
+        {slides.map((slide, index) => (
+          <div 
+            key={index}
+            className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
+            style={{ backgroundImage: `url(${slide.image})` }}
+          >
+            <div className="slide-overlay"></div>
+            <div className="slide-content">
+              <h1>{slide.title}</h1>
+              <p>{slide.subtitle}</p>
+              <Link to="/boutique" className="hero-cta">{slide.cta}</Link>
+            </div>
+          </div>
+        ))}
+        <div className="carousel-dots">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              className={`dot ${index === currentSlide ? 'active' : ''}`}
+              onClick={() => setCurrentSlide(index)}
+            />
+          ))}
         </div>
-        <div className="product-card">
-          <div className="product-image-placeholder"></div>
-          <h3>Balsamique Blanc</h3>
-          <p>Vieilli 3 ans en fût de chêne</p>
-          <span className="price">18,90€</span>
+      </section>
+
+      {/* Featured Section */}
+      <section className="featured-section">
+        <div className="featured-content">
+          <h2>Bienvenue à la Maison Heness</h2>
+          <p className="featured-subtitle">Découvrez nos vinaigres artisanaux d'exception</p>
+          <div className="featured-grid">
+            <div className="featured-card">
+              <div className="card-image" style={{ backgroundImage: 'url(/images/home/magasinhabib.jpeg)' }}></div>
+              <h3>Notre Magasin</h3>
+              <p>Venez découvrir notre espace dédié aux amateurs de vinaigres fins</p>
+              <Link to="/boutique" className="card-link">Visiter →</Link>
+            </div>
+            <div className="featured-card">
+              <div className="card-image" style={{ backgroundImage: 'url(/images/home/tonneauvinaigrerie.jpg)' }}></div>
+              <h3>Notre Savoir-Faire</h3>
+              <p>Un processus artisanal respectueux de la tradition</p>
+              <Link to="/vinaigrerie" className="card-link">Découvrir →</Link>
+            </div>
+            <div className="featured-card">
+              <div className="card-image" style={{ backgroundImage: 'url(/images/home/MaisonHeness4.jpg)' }}></div>
+              <h3>Nos Produits</h3>
+              <p>Des créations uniques aux saveurs remarquables</p>
+              <Link to="/boutique" className="card-link">Acheter →</Link>
+            </div>
+          </div>
         </div>
-        <div className="product-card">
-          <div className="product-image-placeholder"></div>
-          <h3>Vinaigre aux Framboises</h3>
-          <p>Fruité et délicat</p>
-          <span className="price">15,20€</span>
+      </section>
+
+      {/* Products Preview */}
+      <section className="products-preview">
+        <h2>Nos Vinaigres Signature</h2>
+        <div className="products-grid">
+          {[
+            { name: "Vinaigre de Cidre", price: "12,50€" },
+            { name: "Balsamique Blanc", price: "18,90€" },
+            { name: "Vinaigre aux Framboises", price: "15,20€" },
+            { name: "Vinaigre Xérès", price: "22,50€" }
+          ].map((product, index) => (
+            <div className="product-card" key={index}>
+              <div className="product-badge">Nouveau</div>
+              <div className="product-image"></div>
+              <h3>{product.name}</h3>
+              <span className="product-price">{product.price}</span>
+              <Link to="/boutique" className="product-cta">Découvrir</Link>
+            </div>
+          ))}
         </div>
-      </div>
-      <Link to="/boutique" className="cta-button secondary">Voir tous les produits</Link>
-    </section>
-  </main>
-);
+        <Link to="/boutique" className="section-cta">Voir tous nos produits</Link>
+      </section>
+    </div>
+  );
+};
 
 export default Home;
