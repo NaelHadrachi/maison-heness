@@ -9,26 +9,22 @@ const Home = () => {
     {
       image: "/images/home/MaisonHeness2.jpg",
       title: "Maison Heness",
-      subtitle: "Vinaigrerie artisanale d'exception",
-      cta: "Découvrir nos produits"
+      subtitle: "Vinaigrerie artisanale d'exception"
     },
     {
       image: "/images/home/MaisonHeness20.jpg",
       title: "Un savoir-faire ancestral",
-      subtitle: "",
-      cta: "Notre histoire"
+      subtitle: ""
     },
     {
       image: "/images/home/MaisonHeness4.jpg",
       title: "Élevage en fûts de chêne",
-      subtitle: "Pour des arômes complexes et subtils",
-      cta: "Visiter notre vinaigrerie"
+      subtitle: "Pour des arômes complexes et subtils"
     },
     {
-      image: "/images/home/tonneauvinaigrerie.jpg",
+      image: "/images/home/MaisonHeness14.jpg",
       title: "Fabrication artisanale",
-      subtitle: "Respect des méthodes traditionnelles",
-      cta: "Notre processus"
+      subtitle: "Respect des méthodes traditionnelles"
     }
   ];
 
@@ -53,7 +49,6 @@ const Home = () => {
             <div className="slide-content">
               <h1>{slide.title}</h1>
               <p>{slide.subtitle}</p>
-              <Link to="/boutique" className="hero-cta">{slide.cta}</Link>
             </div>
           </div>
         ))}
@@ -78,13 +73,13 @@ const Home = () => {
               <div className="card-image" style={{ backgroundImage: 'url(/images/home/magasinhabib.jpeg)' }}></div>
               <h3>Notre Magasin</h3>
               <p>Venez découvrir notre espace dédié aux amateurs de vinaigres fins</p>
-              <Link to="/boutique" className="card-link">Visiter →</Link>
+              <Link to="/vinaigrerie" className="card-link">Visiter →</Link>
             </div>
             <div className="featured-card">
               <div className="card-image" style={{ backgroundImage: 'url(/images/home/tonneauvinaigrerie.jpg)' }}></div>
               <h3>Notre Savoir-Faire</h3>
               <p>Un processus artisanal respectueux de la tradition</p>
-              <Link to="/vinaigrerie" className="card-link">Découvrir →</Link>
+              <Link to="/notre-histoire" className="card-link">Découvrir →</Link>
             </div>
             <div className="featured-card">
               <div className="card-image" style={{ backgroundImage: 'url(/images/home/MaisonHeness4.jpg)' }}></div>
@@ -94,28 +89,6 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Products Preview */}
-      <section className="products-preview">
-        <h2>Nos Vinaigres Signature</h2>
-        <div className="products-grid">
-          {[
-            { name: "Vinaigre de Cidre", price: "12,50€" },
-            { name: "Balsamique Blanc", price: "18,90€" },
-            { name: "Vinaigre aux Framboises", price: "15,20€" },
-            { name: "Vinaigre Xérès", price: "22,50€" }
-          ].map((product, index) => (
-            <div className="product-card" key={index}>
-              <div className="product-badge">Nouveau</div>
-              <div className="product-image"></div>
-              <h3>{product.name}</h3>
-              <span className="product-price">{product.price}</span>
-              <Link to="/boutique" className="product-cta">Découvrir</Link>
-            </div>
-          ))}
-        </div>
-        <Link to="/boutique" className="section-cta">Voir tous nos produits</Link>
       </section>
     </div>
   );
