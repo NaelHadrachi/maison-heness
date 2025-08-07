@@ -1,44 +1,73 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import produits from '../../data/produits';
+import './Boutique.css';
 
-const Boutique = () => (
-  <main style={{ padding: '2rem' }}>
-    <h2 style={{ textAlign: 'center' }}>Nos Vinaigres</h2>
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: '1.5rem',
-        marginTop: '2rem'
-      }}
-    >
-      {produits.map((p) => (
-        <Link
-          to={`/produit/${p.id}`}
-          key={p.id}
-          style={{ textDecoration: 'none', color: 'inherit' }}
-        >
-          <div
-            style={{
-              border: '1px solid #ccc',
-              padding: '1rem',
-              borderRadius: '10px',
-              background: '#fff8f0'
-            }}
-          >
-            <img
-              src={p.image}
-              alt={p.nom}
-              style={{ width: '100%', height: '150px', objectFit: 'cover' }}
-            />
-            <h3>{p.nom}</h3>
-            <p>{p.prix.toFixed(2)} €</p>
-          </div>
-        </Link>
-      ))}
+const Boutique = () => {
+  const categories = [
+    {
+      id: 'vinaigre-grenade',
+      nom: 'Vinaigres de Grenade (100ml)',
+      produits: produits.filter(p => p.categorie === 'vinaigre-grenade')
+    },
+    {
+      id: 'vinaigre-balsamique',
+      nom: 'Vinaigres Balsamiques',
+      produits: produits.filter(p => p.categorie === 'vinaigre-balsamique')
+    },
+    {
+      id: 'huile-olive',
+      nom: "Huiles d'olive (250ml)",
+      produits: produits.filter(p => p.categorie === 'huile-olive')
+    },
+    {
+      id: 'epicerie',
+      nom: 'Épicerie fine',
+      produits: produits.filter(p => p.categorie === 'epicerie')
+    }
+  ];
+
+  return (
+    <div className="boutique-luxe">
+      <header className="boutique-header">
+        <div className="header-content">
+          <h1>Artisanat Gourmand</h1>
+          <p className="sous-titre">Des saveurs raffinées, une qualité d'exception</p>
+        </div>
+      </header>
+
+      <main className="boutique-main">
+        {categories.map(categorie => (
+          <section key={categorie.id} className="category-section">
+            <div className="category-header">
+              <h2 className="category-title">{categorie.nom}</h2>
+              <div className="title-decoration"></div>
+            </div>
+            <div className="products-grid">
+              {categorie.produits.map(produit => (
+                <ProductCard key={produit.id} produit={produit} />
+              ))}
+            </div>
+          </section>
+        ))}
+      </main>
     </div>
-  </main>
+  );
+};
+
+const ProductCard = ({ produit }) => (
+  <Link to={`/produit/${produit.id}`} className="product-card-luxe">
+    <div className="product-visual">
+      <div className="product-badge">{produit.prix.toFixed(2)} €</div>
+      <div className="image-placeholder-luxe">
+        <span>{produit.nom.split(' - ')[1] || produit.nom}</span>
+      </div>
+    </div>
+    <div className="product-info-luxe">
+      <h3>{produit.nom}</h3>
+      <p className="product-description">{produit.description}</p>
+    </div>
+  </Link>
 );
 
 export default Boutique;

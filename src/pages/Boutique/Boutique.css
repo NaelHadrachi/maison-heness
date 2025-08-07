@@ -1,0 +1,209 @@
+/* Variables luxe */
+:root {
+  --noir: #1a1a1a;
+  --blanc: #ffffff;
+  --beige: #f3e9e1;
+  --taupe: #d8c4b8;
+  --bordeaux: #6d2e46;
+  --or: #c0a062;
+  --texte: #333333;
+  --texte-clair: #777777;
+}
+
+/* Reset et base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Playfair Display', serif;
+  color: var(--texte);
+  line-height: 1.6;
+}
+
+.boutique-luxe {
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: var(--beige);
+}
+
+/* En-tête */
+.boutique-header {
+  background-color: var(--noir);
+  color: var(--blanc);
+  padding: 5rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.boutique-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--bordeaux), var(--or));
+}
+
+.header-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.boutique-header h1 {
+  font-size: 3.5rem;
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+}
+
+.sous-titre {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  color: var(--taupe);
+}
+
+/* Sections de catégories */
+.category-section {
+  padding: 4rem 2rem;
+}
+
+.category-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.category-title {
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--bordeaux);
+  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+}
+
+.title-decoration {
+  height: 2px;
+  width: 80px;
+  background: linear-gradient(90deg, var(--bordeaux), var(--or));
+  margin: 0 auto;
+}
+
+/* Grille de produits */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Carte produit luxe */
+.product-card-luxe {
+  text-decoration: none;
+  color: inherit;
+  background: var(--blanc);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.product-card-luxe:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.product-visual {
+  position: relative;
+  height: 220px;
+  background: linear-gradient(135deg, var(--taupe), var(--beige));
+}
+
+.image-placeholder-luxe {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.image-placeholder-luxe span {
+  color: var(--noir);
+  font-size: 1.8rem;
+  font-weight: 500;
+  text-align: center;
+  opacity: 0.8;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.product-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: var(--bordeaux);
+  color: var(--blanc);
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  z-index: 2;
+}
+
+.product-info-luxe {
+  padding: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-info-luxe h3 {
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-bottom: 0.8rem;
+  color: var(--noir);
+}
+
+.product-description {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  color: var(--texte-clair);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  flex-grow: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .boutique-header h1 {
+    font-size: 2.5rem;
+  }
+  
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .boutique-header {
+    padding: 3rem 1rem;
+  }
+  
+  .boutique-header h1 {
+    font-size: 2rem;
+  }
+  
+  .category-section {
+    padding: 2rem 1rem;
+  }
+}
