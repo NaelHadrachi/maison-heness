@@ -1,66 +1,89 @@
-.detailContainer {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: #f9f5f0;
-  border-radius: 8px;
+:root{
+  --text:#1f1a15; --title:#17130f; --bg:#f6f1ea; --surface:#fffdf8;
+  --gold:#c9a86a; --muted:#6f665a; --border:#e8dfd3; --accent:#6b4a35;
+  --shadow:0 14px 32px rgba(0,0,0,.08);
 }
 
-.infoContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+.page{max-width:1200px;margin:0 auto;padding:18px 18px 28px}
+
+/* Breadcrumb */
+.breadcrumb{display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--muted);margin:6px 4px 14px}
+.breadcrumb a{color:inherit;text-decoration:none;border-bottom:1px dashed transparent}
+.breadcrumb a:hover{border-bottom-color:var(--muted)}
+
+/* Sheet */
+.sheet{
+  background:var(--surface);border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);
+  display:grid;grid-template-columns:1.05fr 1fr;gap:26px;padding:22px;
 }
 
-.productTitle {
-  font-size: 2rem;
-  color: #5a3921;
-  margin: 0;
-  border-bottom: 2px solid #d2b48c;
-  padding-bottom: 0.5rem;
+/* Media */
+.mediaCol{display:flex;flex-direction:column;gap:14px}
+.media{
+  position:relative;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#eadfce,#f7efe1);
+  aspect-ratio:4/3;border:none;padding:0;cursor:zoom-in;
 }
+.media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
+.media:hover img{transform:scale(1.035)}
+.fallback{display:flex;align-items:center;justify-content:center;height:100%;font-family:"Montserrat",sans-serif;font-weight:600;color:#4a3327;opacity:.95}
+.zoomHint{position:absolute;right:10px;bottom:10px;background:rgba(255,255,255,.9);border:1px solid var(--border);padding:4px 8px;border-radius:999px;font-size:.8rem;color:var(--muted)}
 
-.productDescription {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: #333;
+/* Infos */
+.infoCol{display:flex;flex-direction:column;gap:14px}
+.title{font-family:"Playfair Display",serif;font-size:clamp(1.4rem,2.6vw,2rem);color:var(--title);margin:0}
+.desc{font-family:"Montserrat",sans-serif;color:#352c24;line-height:1.8;font-size:1rem}
+
+/* CTA row (prix + lien externe) */
+.ctaRow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:6px}
+.price{font-size:1.5rem;font-weight:800;color:var(--accent);background:#fff;border:1px solid var(--border);padding:10px 14px;border-radius:12px}
+.externalBtn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  appearance:none;border:1px solid var(--border);
+  background:linear-gradient(180deg,#fff,#f5ebdf);color:#1f1a15;
+  padding:12px 16px;border-radius:12px;cursor:pointer;font-weight:800;text-decoration:none;
+  transition:transform .15s ease, box-shadow .15s ease, background .2s ease
 }
+.externalBtn:hover{transform:translateY(-1px);box-shadow:0 10px 18px rgba(0,0,0,.08)}
 
-.priceContainer {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  margin-top: 1rem;
+/* Meta */
+.metaRow{display:flex;gap:8px;align-items:center;margin-top:4px}
+.badgeCat{background:#fff;border:1px solid var(--border);color:var(--muted);padding:6px 10px;border-radius:999px;font-size:.9rem}
+.badge{background:var(--accent);color:#fff;padding:6px 10px;border-radius:999px;font-size:.85rem}
+
+/* Related carousel */
+.related{margin-top:26px}
+.related h2{font-family:"Playfair Display",serif;font-size:1.3rem;margin:0 0 12px;color:var(--title)}
+.carousel{
+  display:grid;grid-auto-flow:column;grid-auto-columns:calc(25% - 12px);
+  gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px
 }
+.carousel:focus{outline:2px solid var(--gold);outline-offset:4px}
+.relCard{scroll-snap-align:start;text-decoration:none;color:inherit;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);transition:transform .2s ease, box-shadow .2s ease}
+.relCard:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,.1)}
+.relMedia{aspect-ratio:4/3;background:linear-gradient(135deg,#eadfce,#f7efe1)}
+.relMedia img{width:100%;height:100%;object-fit:cover;display:block}
+.relFallback{display:flex;align-items:center;justify-content:center;height:100%;font-family:"Montserrat",sans-serif;font-weight:600;color:#4a3327}
+.relInfo{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px}
+.relInfo h3{font-size:1rem;line-height:1.3;margin:0;color:var(--title)}
+.relPrice{font-weight:800;color:var(--accent)}
 
-.price {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #5a3921;
+/* Lightbox */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:80;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.lightboxImg{max-width:92vw;max-height:88vh;border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.closeLb{position:absolute;top:14px;right:14px;appearance:none;border:none;background:rgba(255,255,255,.9);width:42px;height:42px;border-radius:999px;cursor:pointer;font-size:1.2rem;line-height:1}
+
+/* Erreur */
+.errorBox{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:28px;margin:18px;text-align:center}
+.backBtn{display:inline-block;margin-top:12px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:#fff;text-decoration:none;color:var(--text)}
+.backBtn:hover{background:#faf6ef}
+
+/* Responsive */
+@media (max-width: 980px){
+  .sheet{grid-template-columns:1fr;gap:18px}
+  .media{aspect-ratio:16/10}
+  .carousel{grid-auto-columns:calc(60% - 10px)}
 }
-
-.addToCart {
-  background-color: #5a3921;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-}
-
-.addToCart:hover {
-  background-color: #7a5c3c;
-  transform: translateY(-2px);
-}
-
-.errorContainer {
-  text-align: center;
-  padding: 2rem;
-  color: #d32f2f;
-  background-color: #f9f5f0;
-  border-radius: 8px;
-  max-width: 800px;
-  margin: 2rem auto;
+@media (max-width: 560px){
+  .carousel{grid-auto-columns:calc(80% - 8px)}
 }

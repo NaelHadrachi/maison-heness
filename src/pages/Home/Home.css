@@ -183,3 +183,10 @@
     font-size: 2rem;
   }
 }
+.hero-carousel {
+  width: 100vw;              /* 100% de la largeur écran */
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw); /* sort du centrage */
+  height: 100dvh;            /* plein écran fiable */
+  min-height: 600px;
+}
