@@ -1,73 +1,203 @@
-import React from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import produits from '../../data/produits';
 import './Boutique.css';
 
-const Boutique = () => {
-  const categories = [
-    {
-      id: 'vinaigre-grenade',
-      nom: 'Vinaigres de Grenade (100ml)',
-      produits: produits.filter(p => p.categorie === 'vinaigre-grenade')
-    },
-    {
-      id: 'vinaigre-balsamique',
-      nom: 'Vinaigres Balsamiques',
-      produits: produits.filter(p => p.categorie === 'vinaigre-balsamique')
-    },
-    {
-      id: 'huile-olive',
-      nom: "Huiles d'olive (250ml)",
-      produits: produits.filter(p => p.categorie === 'huile-olive')
-    },
-    {
-      id: 'epicerie',
-      nom: 'Épicerie fine',
-      produits: produits.filter(p => p.categorie === 'epicerie')
+/**
+ * Boutique – version élargie + accessibilité améliorée
+ * - Palette plus contrastée (meilleure lisibilité des descriptions)
+ * - Mise en page plus large (jusqu'à 1440px)
+ * - Barre de recherche améliorée: clear, compteur, raccourci '/', surbrillance des correspondances
+ * - Tri et filtres conservés, cartes raffinées
+ */
+export default function Boutique() {
+  const [activeCat, setActiveCat] = useState('all');
+  const [query, setQuery] = useState('');
+  const [sort, setSort] = useState('featured');
+
+  // focus sur la recherche via la touche '/'
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === '/') {
+      const input = document.getElementById('search-products');
+      if (input) {
+        e.preventDefault();
+        input.focus();
+      }
     }
-  ];
+  }, []);
+
+  React.useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
+
+  const categories = useMemo(() => {
+    const set = new Set(produits.map(p => p.categorie));
+    return ['all', ...Array.from(set)];
+  }, []);
+
+  const filtered = useMemo(() => {
+    let list = produits.filter(p => (activeCat === 'all' ? true : p.categorie === activeCat));
+    if (query.trim()) {
+      const q = query.toLowerCase();
+      list = list.filter(p =>
+        `${p.nom} ${p.description ?? ''}`.toLowerCase().includes(q)
+      );
+    }
+    switch (sort) {
+      case 'price-asc':
+        list = [...list].sort((a, b) => a.prix - b.prix); break;
+      case 'price-desc':
+        list = [...list].sort((a, b) => b.prix - a.prix); break;
+      case 'name':
+        list = [...list].sort((a, b) => a.nom.localeCompare(b.nom)); break;
+      default:
+        list = [...list]; // featured
+    }
+    return list;
+  }, [activeCat, query, sort]);
+
+  // util pour surligner la recherche dans un texte
+  const Highlight = ({ text }) => {
+    if (!query.trim()) return <>{text}</>;
+    const q = query.trim();
+    try {
+      const parts = text.split(new RegExp(`(${escapeRegExp(q)})`, 'gi'));
+      return (
+        <>
+          {parts.map((part, i) =>
+            part.toLowerCase() === q.toLowerCase() ? <mark key={i}>{part}</mark> : <span key={i}>{part}</span>
+          )}
+        </>
+      );
+    } catch {
+      return <>{text}</>;
+    }
+  };
 
   return (
-    <div className="boutique-luxe">
-      <header className="boutique-header">
-        <div className="header-content">
+    <div className="boutique luxe container">
+      {/* HERO pleine largeur visuelle */}
+      <header className="hero">
+        <div className="hero-overlay" />
+        <div className="hero-inner">
           <h1>Artisanat Gourmand</h1>
-          <p className="sous-titre">Des saveurs raffinées, une qualité d'exception</p>
+          <p className="subtitle">Vinaigres d'exception, huiles d'olive & épicerie fine</p>
+          <div className="hero-stripe" />
         </div>
       </header>
 
-      <main className="boutique-main">
-        {categories.map(categorie => (
-          <section key={categorie.id} className="category-section">
-            <div className="category-header">
-              <h2 className="category-title">{categorie.nom}</h2>
-              <div className="title-decoration"></div>
+      {/* BARRE D'OUTILS */}
+      <section className="toolbar" role="region" aria-label="Filtres boutique">
+        <div className="toolbar-row">
+          <div className="categories" role="tablist" aria-label="Catégories">
+            {categories.map(cat => (
+              <button
+                key={cat}
+                role="tab"
+                aria-selected={activeCat === cat}
+                className={`pill ${activeCat === cat ? 'active' : ''}`}
+                onClick={() => setActiveCat(cat)}
+              >
+                {labelCat(cat)}
+              </button>
+            ))}
+          </div>
+
+          <div className="controls">
+            <div className="search" role="search">
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M10 18a8 8 0 1 1 5.293-14.293A8 8 0 0 1 10 18Zm11 3-6-6" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round"/>
+              </svg>
+              <input
+                id="search-products"
+                type="search"
+                placeholder="Rechercher un produit… (tapez '/')"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                aria-label="Rechercher des produits par nom ou description"
+              />
+              {query && (
+                <button className="clear" onClick={() => setQuery('')} aria-label="Effacer la recherche">×</button>
+              )}
             </div>
-            <div className="products-grid">
-              {categorie.produits.map(produit => (
-                <ProductCard key={produit.id} produit={produit} />
-              ))}
+
+            <label className="sort">
+              <span>Tri</span>
+              <select value={sort} onChange={e => setSort(e.target.value)} aria-label="Trier par">
+                <option value="featured">Mis en avant</option>
+                <option value="price-asc">Prix : croissant</option>
+                <option value="price-desc">Prix : décroissant</option>
+                <option value="name">Nom</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div className="results-hint">
+          {filtered.length} produit{filtered.length > 1 ? 's' : ''} trouvé{filtered.length > 1 ? 's' : ''}
+        </div>
+      </section>
+
+      {/* GRID */}
+      <main className="grid">
+        {filtered.map(p => (
+          <Link key={p.id} to={`/produit/${p.id}`} className="card" aria-label={`Voir ${p.nom}`}>
+            <div className="media">
+              {p.image ? (
+                <img src={p.image} alt={p.nom} loading="lazy" />
+              ) : (
+                <div className="fallback" aria-hidden>
+                  <span>{extractShortName(p.nom)}</span>
+                </div>
+              )}
+              <span className="price">{Number(p.prix).toFixed(2)} €</span>
+              {p.badge && <span className="badge">{p.badge}</span>}
             </div>
-          </section>
+            <div className="content">
+              <h3 className="name"><Highlight text={p.nom} /></h3>
+              {p.description && <p className="desc"><Highlight text={p.description} /></p>}
+              <div className="meta">
+                <span className="cat">{labelCat(p.categorie)}</span>
+                <span className="cta">Voir le produit →</span>
+              </div>
+            </div>
+          </Link>
         ))}
+        {filtered.length === 0 && (
+          <div className="empty">
+            Aucun produit ne correspond à votre recherche.
+          </div>
+        )}
       </main>
+
+      <footer className="note">
+        <p>
+          Tous nos produits sont fabriqués en petites séries. Des variations de couleur ou de
+          texture peuvent survenir, gage d'un savoir-faire artisanal.
+        </p>
+      </footer>
     </div>
   );
-};
+}
 
-const ProductCard = ({ produit }) => (
-  <Link to={`/produit/${produit.id}`} className="product-card-luxe">
-    <div className="product-visual">
-      <div className="product-badge">{produit.prix.toFixed(2)} €</div>
-      <div className="image-placeholder-luxe">
-        <span>{produit.nom.split(' - ')[1] || produit.nom}</span>
-      </div>
-    </div>
-    <div className="product-info-luxe">
-      <h3>{produit.nom}</h3>
-      <p className="product-description">{produit.description}</p>
-    </div>
-  </Link>
-);
+function labelCat(key) {
+  const map = {
+    'vinaigre-grenade': 'Vinaigres de Grenade',
+    'vinaigre-balsamique': 'Vinaigres Balsamiques',
+    'huile-olive': "Huiles d'olive",
+    'epicerie': 'Épicerie fine',
+    'all': 'Tout'
+  };
+  return map[key] ?? key;
+}
 
-export default Boutique;
+function extractShortName(nom) {
+  if (!nom) return '';
+  const parts = nom.split(' - ');
+  return (parts[1] || parts[0] || '').slice(0, 28);
+}
+
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
