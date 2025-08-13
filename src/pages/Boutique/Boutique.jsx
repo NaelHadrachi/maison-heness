@@ -1,21 +1,23 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
 import produits from '../../data/produits';
 import './Boutique.css';
 
 /**
  * Boutique – version élargie + accessibilité améliorée
- * - Palette plus contrastée (meilleure lisibilité des descriptions)
- * - Mise en page plus large (jusqu'à 1440px)
- * - Barre de recherche améliorée: clear, compteur, raccourci '/', surbrillance des correspondances
- * - Tri et filtres conservés, cartes raffinées
+ * - Plus de navigation vers la page détail : clic = zoom plein écran
+ * - Loupe au survol
+ * - Recherche '/', tri, filtres
  */
 export default function Boutique() {
   const [activeCat, setActiveCat] = useState('all');
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState('featured');
 
-  // focus sur la recherche via la touche '/'
+  // état zoom
+  const [zoomSrc, setZoomSrc] = useState(null);
+  const [zoomAlt, setZoomAlt] = useState('');
+
+  // focus sur la recherche via la touche '/' + fermeture ESC
   const handleKeyDown = useCallback((e) => {
     if (e.key === '/') {
       const input = document.getElementById('search-products');
@@ -23,6 +25,10 @@ export default function Boutique() {
         e.preventDefault();
         input.focus();
       }
+    }
+    if (e.key === 'Escape') {
+      setZoomSrc(null);
+      setZoomAlt('');
     }
   }, []);
 
@@ -45,14 +51,10 @@ export default function Boutique() {
       );
     }
     switch (sort) {
-      case 'price-asc':
-        list = [...list].sort((a, b) => a.prix - b.prix); break;
-      case 'price-desc':
-        list = [...list].sort((a, b) => b.prix - a.prix); break;
-      case 'name':
-        list = [...list].sort((a, b) => a.nom.localeCompare(b.nom)); break;
-      default:
-        list = [...list]; // featured
+      case 'price-asc':  list = [...list].sort((a, b) => a.prix - b.prix); break;
+      case 'price-desc': list = [...list].sort((a, b) => b.prix - a.prix); break;
+      case 'name':       list = [...list].sort((a, b) => a.nom.localeCompare(b.nom)); break;
+      default:           list = [...list]; // featured
     }
     return list;
   }, [activeCat, query, sort]);
@@ -75,9 +77,19 @@ export default function Boutique() {
     }
   };
 
+  const openZoom = (src, alt) => {
+    if (!src) return;
+    setZoomSrc(src);
+    setZoomAlt(alt || '');
+  };
+  const closeZoom = () => {
+    setZoomSrc(null);
+    setZoomAlt('');
+  };
+
   return (
     <div className="boutique luxe container">
-      {/* HERO pleine largeur visuelle */}
+      {/* HERO */}
       <header className="hero">
         <div className="hero-overlay" />
         <div className="hero-inner">
@@ -142,10 +154,33 @@ export default function Boutique() {
       {/* GRID */}
       <main className="grid">
         {filtered.map(p => (
-          <Link key={p.id} to={`/produit/${p.id}`} className="card" aria-label={`Voir ${p.nom}`}>
+          <article key={p.id} className="card" aria-label={p.nom}>
             <div className="media">
               {p.image ? (
-                <img src={p.image} alt={p.nom} loading="lazy" />
+                <>
+                  {/* fond flouté */}
+                  <img src={p.image} alt="" aria-hidden="true" className="bg" loading="lazy" />
+                  {/* produit */}
+                  <img
+                    src={p.image}
+                    alt={p.nom}
+                    className="fg"
+                    loading="lazy"
+                    onClick={() => openZoom(p.image, p.nom)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && openZoom(p.image, p.nom)}
+                    aria-label={`Zoomer ${p.nom}`}
+                  />
+                  {/* Loupe */}
+                  <button
+                    className="zoom-btn"
+                    aria-label={`Zoomer ${p.nom}`}
+                    onClick={(e) => { e.stopPropagation(); openZoom(p.image, p.nom); }}
+                  >
+                    🔍
+                  </button>
+                </>
               ) : (
                 <div className="fallback" aria-hidden>
                   <span>{extractShortName(p.nom)}</span>
@@ -154,16 +189,20 @@ export default function Boutique() {
               <span className="price">{Number(p.prix).toFixed(2)} €</span>
               {p.badge && <span className="badge">{p.badge}</span>}
             </div>
+
             <div className="content">
               <h3 className="name"><Highlight text={p.nom} /></h3>
               {p.description && <p className="desc"><Highlight text={p.description} /></p>}
               <div className="meta">
                 <span className="cat">{labelCat(p.categorie)}</span>
-                <span className="cta">Voir le produit →</span>
+                <span className="cta" role="button" onClick={() => openZoom(p.image, p.nom)}>
+                  Zoomer →
+                </span>
               </div>
             </div>
-          </Link>
+          </article>
         ))}
+
         {filtered.length === 0 && (
           <div className="empty">
             Aucun produit ne correspond à votre recherche.
@@ -177,6 +216,14 @@ export default function Boutique() {
           texture peuvent survenir, gage d'un savoir-faire artisanal.
         </p>
       </footer>
+
+      {/* Overlay zoom plein écran */}
+      {zoomSrc && (
+        <div className="zoom-overlay" role="dialog" aria-modal="true" aria-label={`Zoom ${zoomAlt}`} onClick={closeZoom}>
+          <img src={zoomSrc} alt={zoomAlt} onClick={(e) => e.stopPropagation()} />
+          <button className="zoom-close" aria-label="Fermer" onClick={closeZoom}>×</button>
+        </div>
+      )}
     </div>
   );
 }
