@@ -1,0 +1,98 @@
+:root{
+  --encre:#1d1a16;
+  --encre-2:#2a2620;
+  --cafe:#5a3d2e;
+  --sable:#f5efe7;
+  --ivoire:#fffdf8;
+  --or:#c9a86a;
+  --gris:#6f665a;
+  --bord:#e9dfd2;
+  --ombre:0 16px 40px rgba(0,0,0,.10);
+}
+
+.rx.container{max-width:1280px;margin:0 auto;color:var(--encre)}
+
+/* HERO distinct (dégradé sable → ivoire) */
+.rx-hero{
+  position:relative;margin:28px;border-radius:28px;overflow:hidden;box-shadow:var(--ombre);
+  background:linear-gradient(135deg,#f7efe4 0%,#fffdf8 60%, #f0e6d8 100%);
+  height:34vh;min-height:240px;display:flex;align-items:center;justify-content:center;
+}
+.rx-veil{
+  position:absolute;inset:0;background:
+    radial-gradient(60% 100% at 20% 0%, rgba(201,168,106,.25), transparent 60%),
+    radial-gradient(50% 60% at 100% 100%, rgba(0,0,0,.06), transparent 60%);
+}
+.rx-inner{position:relative;text-align:center;padding:0 18px}
+.rx-inner h1{
+  font-family:"Playfair Display",serif;font-size:clamp(2rem,5vw,3rem);color:var(--encre-2);margin:0 0 .4rem
+}
+.rx-inner p{color:#6f665a;margin:0}
+
+/* TOOLBAR */
+.rx-toolbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 28px}
+.rx-search{
+  display:flex;align-items:center;gap:8px;background:var(--ivoire);
+  border:1px solid var(--bord);border-radius:14px;padding:10px 12px;box-shadow:var(--ombre)
+}
+.rx-search input{border:none;outline:none;background:transparent;min-width:260px;font-size:1rem;color:var(--encre)}
+.rx-search .clear{appearance:none;border:none;background:transparent;font-size:1.2rem;line-height:1;padding:0 4px;margin-left:4px;cursor:pointer;color:var(--gris)}
+.rx-search .clear:hover{color:var(--encre)}
+.rx-count{color:var(--gris)}
+
+/* GRID mosaïque */
+.rx-grid{
+  display:grid;gap:22px;padding:10px 28px 34px;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+}
+
+/* CARD raffinée */
+.rc{
+  background:var(--ivoire);border-radius:18px;overflow:hidden;box-shadow:var(--ombre);
+  transition:transform .25s ease, box-shadow .25s ease;
+  display:flex;flex-direction:column;
+}
+.rc:hover{transform:translateY(-6px);box-shadow:0 18px 42px rgba(0,0,0,.12)}
+
+.rc-media{position:relative;aspect-ratio:4/3;overflow:hidden;background:linear-gradient(135deg,#eadfce,#f7efe1);cursor:zoom-in}
+.rc-media .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(14px) brightness(1.06) saturate(1.03);transform:scale(1.12);z-index:0;pointer-events:none}
+.rc-media .fg{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 6px 18px rgba(0,0,0,.12))}
+.rc-media .zoom{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.55);color:#fff;padding:6px 8px;border-radius:999px;font-size:12px}
+.rc-media .rt{
+  position:absolute;top:10px;left:10px;background:linear-gradient(180deg,#fff,#f2eadb);
+  border:1px solid rgba(201,168,106,.5);padding:6px 10px;border-radius:999px;font-weight:700;font-size:.9rem
+}
+.rc-fallback{display:flex;align-items:center;justify-content:center;height:100%;color:#4a3327;font-weight:600;letter-spacing:.02em;padding:10px}
+
+.rc-body{padding:16px}
+.rc-title{font-family:"Playfair Display",serif;color:var(--encre-2);font-size:1.2rem;margin:2px 0 8px}
+.rc-block{margin-top:10px}
+.rc-block h4{margin:0 0 6px;color:var(--cafe);font-size:.98rem}
+.rc-ing{margin:0;padding-left:18px;display:grid;gap:4px}
+.rc-prep{margin:0;line-height:1.7;color:#3b3128;white-space:pre-wrap}
+
+/* Skeleton */
+.skeleton{background:linear-gradient(90deg,#f4eee6,#faf6ef,#f4eee6);animation:shimmer 1.2s infinite;min-height:330px;border-radius:18px}
+@keyframes shimmer{0%{background-position:-200px 0}100%{background-position:calc(200px + 100%) 0}}
+
+/* Empty */
+.rx-empty{
+  grid-column:1 / -1;text-align:center;color:var(--gris);padding:44px;
+  border:1px dashed var(--bord);border-radius:18px;background:linear-gradient(180deg,#fffefc,#f8f2e8)
+}
+
+/* Lightbox */
+.rx-lightbox{
+  position:fixed;inset:0;background:rgba(0,0,0,.86);display:flex;align-items:center;justify-content:center;z-index:9999;padding:24px
+}
+.rx-lightbox img{max-width:92vw;max-height:92vh;border-radius:14px;box-shadow:0 12px 36px rgba(0,0,0,.5)}
+.rx-close{
+  position:fixed;top:16px;right:18px;z-index:10000;background:rgba(255,255,255,.92);
+  border:1px solid rgba(0,0,0,.08);width:40px;height:40px;border-radius:999px;font-size:1.4rem;line-height:1;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.25)
+}
+
+/* Responsive */
+@media (max-width: 800px){
+  .rx-hero{margin:16px;border-radius:20px;height:30vh}
+  .rx-search input{min-width:180px}
+}
