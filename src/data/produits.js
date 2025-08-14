@@ -221,26 +221,26 @@ const produits = [
     description: "Huile d'olive extra vierge pressée à froid, fruitée et équilibrée.",
     categorie: 'huile-olive',
     prix: 7.50,
-    image: '/images/huile-nature.jpg'
+    image: '/images/Boutique/huileolive.png'
   },
-  {
-    id: 'huile-truffe',
-    nom: 'Huile d\'olive - Truffe',
-    description: "Huile d'olive parfumée à la truffe noire, intense et aromatique.",
-    categorie: 'huile-olive',
-    prix: 9.50,
-    image: '/images/huile-truffe.jpg'
-  },
+{
+  id: 'coffret-2-bouteilles',
+  nom: 'Coffret 2 Bouteilles',
+  description: "Coffret élégant comprenant deux bouteilles de vinaigre ou d'huile au choix.",
+  categorie: 'coffrets',
+  prix: 24.90,
+  image: '/images/Boutique/coffret.png'
+},
+{
+  id: 'coffret-3-bouteilles',
+  nom: 'Coffret 3 Bouteilles',
+  description: "Coffret raffiné avec trois bouteilles pour un voyage gustatif complet.",
+  categorie: 'coffrets',
+  prix: 34.90,
+  image: '/images/Boutique/coffret3.png'
+},
 
   // Épicerie fine
-  {
-    id: 'jus-grenade',
-    nom: 'Jus de Grenade 750 ml',
-    description: "Jus de grenade 100% pur, riche en antioxydants, sans additifs.",
-    categorie: 'epicerie',
-    prix: 8.50,
-    image: '/images/jus-grenade.jpg'
-  },
   
   {
     id: 'cafe-monde',
@@ -248,8 +248,10 @@ const produits = [
     description: "Mélange de café torréfié avec des notes de chicorée, tradition Nouvelle-Orléans.",
     categorie: 'epicerie',
     prix: 7.90,
-    image: '/images/cafe-monde.jpg'
+    image: '/images/Boutique/cafe.png'
   }
+ 
 ];
+
 
 export default produits;
