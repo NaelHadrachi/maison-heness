@@ -35,10 +35,22 @@ const Footer = () => {
           <div className="footer-column">
             <h4 className="footer-subtitle">Réseaux sociaux</h4>
             <div className="social-links">
-              <a href="#" aria-label="Instagram" className="social-link">
+              <a 
+                href="https://www.instagram.com/maison_heness/" 
+                aria-label="Instagram" 
+                className="social-link" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
                 <FaInstagram />
               </a>
-              <a href="#" aria-label="Facebook" className="social-link">
+              <a 
+                href="https://www.facebook.com/profile.php?id=61577980330263" 
+                aria-label="Facebook" 
+                className="social-link" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
                 <FaFacebook />
               </a>
             </div>
