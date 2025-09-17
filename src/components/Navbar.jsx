@@ -86,14 +86,7 @@ const Navbar = () => {
                   Boutique
                 </Link>
               </li>
-              <li>
-                <Link 
-                  to="/recettes" 
-                  className={location.pathname === '/recettes' ? 'active' : ''}
-                >
-                  Recettes
-                </Link>
-              </li>
+             
               <li>
                 <Link 
                   to="/contact" 
