@@ -4,8 +4,7 @@ import './Boutique.css';
 
 /**
  * Boutique – version élargie + accessibilité améliorée
- * - Plus de navigation vers la page détail : clic = zoom plein écran
- * - Loupe au survol
+ * - Navigation zoom via loupe
  * - Recherche '/', tri, filtres
  */
 export default function Boutique() {
@@ -195,9 +194,16 @@ export default function Boutique() {
               {p.description && <p className="desc"><Highlight text={p.description} /></p>}
               <div className="meta">
                 <span className="cat">{labelCat(p.categorie)}</span>
-                <span className="cta" role="button" onClick={() => openZoom(p.image, p.nom)}>
-                  Zoomer →
-                </span>
+                {p.url && (
+                  <a
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cta"
+                  >
+                    Achteter le produit →
+                  </a>
+                )}
               </div>
             </div>
           </article>
