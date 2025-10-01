@@ -253,7 +253,7 @@ const produits = [
   id: 'coffret-2-bouteilles',
   nom: 'Coffret 2 Bouteilles',
   description: "Coffret élégant comprenant deux bouteilles de vinaigre ou d'huile au choix.",
-  categorie: 'coffrets',
+  categorie: 'Coffrets',
   prix: 14,
   image: '/images/Boutique/coffret.png'
 },
@@ -261,7 +261,7 @@ const produits = [
   id: 'coffret-3-bouteilles',
   nom: 'Coffret 3 Bouteilles',
   description: "Coffret raffiné avec trois bouteilles pour un voyage gustatif complet.",
-  categorie: 'coffrets',
+  categorie: 'Coffrets',
   prix: 21,
   image: '/images/Boutique/coffret3.png'
 },
@@ -271,9 +271,9 @@ const produits = [
   {
     id: 'cafe-monde',
     nom: 'Café du Monde 250 g',
-    description: "Mélange de café torréfié avec des notes de chicorée, tradition Nouvelle-Orléans.",
+    description: "Mélange de café.",
     categorie: 'epicerie',
-    prix: 7.90,
+    prix: 7.60,
     image: '/images/Boutique/cafe.png'
   }
  
