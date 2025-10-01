@@ -254,7 +254,7 @@ const produits = [
   nom: 'Coffret 2 Bouteilles',
   description: "Coffret élégant comprenant deux bouteilles de vinaigre ou d'huile au choix.",
   categorie: 'coffrets',
-  prix: 24.90,
+  prix: 14,
   image: '/images/Boutique/coffret.png'
 },
 {
@@ -262,7 +262,7 @@ const produits = [
   nom: 'Coffret 3 Bouteilles',
   description: "Coffret raffiné avec trois bouteilles pour un voyage gustatif complet.",
   categorie: 'coffrets',
-  prix: 34.90,
+  prix: 21,
   image: '/images/Boutique/coffret3.png'
 },
 
