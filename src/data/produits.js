@@ -270,8 +270,8 @@ const produits = [
   
   {
     id: 'cafe-monde',
-    nom: 'Café du Monde 250 g',
-    description: "Mélange de café.",
+    nom: 'Café torréfié 100% Arabica',
+    description: "Ce café équilibré et parfumé dévoile toute sa rondeur aux amateurs qui le préparent en cafetière traditionnelle ou à l’italienne.",
     categorie: 'epicerie',
     prix: 7.60,
     image: '/images/Boutique/cafe.png'
