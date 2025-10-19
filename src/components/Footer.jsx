@@ -58,6 +58,15 @@ const Footer = () => {
         </div>
 
         <div className="footer-bottom">
+          <p className="made-by">
+            Site réalisé par <strong>NaexiumTech</strong> — pour toute demande de site, contactez-nous à :{" "}
+            <a
+              href="mailto:naexiumtech@gmail.com"
+              className="footer-link"
+            >
+              naexiumtech@gmail.com
+            </a>
+          </p>
           <p className="copyright">
             &copy; {new Date().getFullYear()} Maison Heness. Tous droits réservés.
           </p>
