@@ -10,7 +10,7 @@ const Footer = () => {
           <div className="footer-column">
             <h3 className="footer-title">Maison Heness</h3>
             <p className="footer-text">
-              Une maison d'hôtes chaleureuse au cœur de Lourdes, alliant confort moderne et charme traditionnel.
+              Une maison de produits d'exception d'Occitanie, chaleureuse au cœur de Lourdes, alliant confort moderne et charme traditionnel.
             </p>
           </div>
 

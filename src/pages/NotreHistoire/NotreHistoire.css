@@ -3,33 +3,39 @@
 :root {
   /* si ton header est en fixed (ex: 80px), mets 80px ici */
   --header-h: 0px;
+
+  /* couleurs */
+  --heness-beige: #f8f4e9;
+  --heness-brown: #5a3921;
+  --heness-gold: #a38b5d;
+
+  /* typo */
+  --base-font: 'Cormorant Garamond', serif;
+  --title-font: 'Playfair Display', serif;
 }
 
 /* ========== BASE ========== */
 .nh-page-container {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--base-font);
   color: #333;
   line-height: 1.8;
   background-color: #fff;
-  /* évite les scrollbars horizontales à cause du full-bleed */
-  overflow-x: clip;
+  overflow-x: clip; /* évite le scroll horizontal avec le full-bleed */
+  isolation: isolate; /* évite des effets d’empilement indésirables */
 }
 
 /* ========== HERO FULL-BLEED ========== */
-/* on casse le container centré, même si un parent a max-width/padding */
 .nh-hero-section {
   position: relative;
 
   width: 100vw !important;
   max-width: 100vw !important;
 
-  /* TRUC QUI MARCHE TOUJOURS : sort du centrage */
   left: 50% !important;
   right: 50% !important;
   margin-left: -50vw !important;
   margin-right: -50vw !important;
 
-  /* plein écran (moins la hauteur potentielle du header) */
   height: calc(100dvh - var(--header-h));
   min-height: 600px;
 
@@ -37,12 +43,10 @@
   align-items: center;
   justify-content: center;
 
-  /* image */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 
-  /* animation subtile */
   animation: nhZoomHero 12s ease-in-out infinite alternate;
 }
 
@@ -70,13 +74,13 @@
 }
 
 .nh-main-title {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--title-font);
   font-size: clamp(2.5rem, 6vw, 4.2rem);
   font-weight: 600;
   margin-bottom: 1rem;
   letter-spacing: 1.5px;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.35);
-  color: #fff !important; /* Blanc pur */
+  color: #fff !important;
 }
 
 .nh-hero-subtitle {
@@ -99,8 +103,8 @@
 }
 
 .nh-story-block {
-  padding: 5rem 0;
   position: relative;
+  padding: 5rem 0;
 }
 
 .nh-story-content {
@@ -120,18 +124,19 @@
 .nh-reverse > * { direction: ltr; }
 
 .nh-story-text {
-  font-size: 1.2rem;
+  font-size: 1.2rem; /* base harmonisée */
   line-height: 2;
   position: relative;
   padding: 0 1rem;
   animation: nhFadeIn 0.8s ease;
 }
+
 @keyframes nhFadeIn { from {opacity: 0} to {opacity: 1} }
 
 .nh-section-title {
   font-size: 2.5rem;
   font-weight: 400;
-  color: #5a3921;
+  color: var(--heness-brown);
   margin-bottom: 2rem;
   position: relative;
   padding-bottom: 1rem;
@@ -139,7 +144,7 @@
 .nh-section-title::after {
   content: '';
   position: absolute; bottom: 0; left: 0;
-  width: 80px; height: 2px; background: #a38b5d;
+  width: 80px; height: 2px; background: var(--heness-gold);
 }
 
 .nh-story-image {
@@ -160,25 +165,87 @@
 }
 .nh-story-image:hover .nh-image { transform: scale(1.05); }
 
-/* Discovery */
+/* ========== DISCOVERY (beige) ========== */
 .nh-discovery {
-  background-color: #f8f4e9;
-  padding: 5rem 0;
+  position: relative;            /* nécessaire pour le masque */
+  background-color: var(--heness-beige);
+  padding-top: 5rem;
+  padding-bottom: 0;             /* pas d'espace beige au pied */
+  overflow: hidden;              /* masque propre au bord */
 }
+
+/* Texte “Notre Découverte” harmonisé avec le reste */
 .nh-large-text {
+  font-size: 1.2rem; /* même taille que les autres paragraphes */
+  line-height: 2;    /* harmonisation */
+}
+
+/* Masque anti-ligne : recouvre la jonction avec du blanc pur */
+.nh-discovery::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  bottom: -1px;                 /* mord légèrement sur la section suivante */
+  height: 16px;                 /* marge de sécurité (peut être réduite à 8px) */
+  background: #ffffff;          /* blanc pur */
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ========== CONCLUSION (blanc) ========== */
+.nh-conclusion {
+  position: relative;
+  background-color: #ffffff;     /* blanc pur */
+  /* chevauche un peu le masque pour tuer toute micro-ligne due au rendu */
+  margin-top: -8px;              /* doit être <= à la hauteur du ::after ci-dessus */
+  padding: 3rem 2rem 4rem;
+  text-align: center;
+  border-top: none;
+}
+
+/* filet de sécurité supplémentaire (au cas où) */
+.nh-conclusion::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  top: -8px;                     /* superposé à la jonction */
+  height: 8px;
+  background: #ffffff;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Texte final */
+.nh-conclusion-text {
+  font-size: 1.2rem;
+  line-height: 1.9;
+  color: #4a3a2a;
+  max-width: 900px;
+  margin: 0 auto;
+  font-style: italic;
+  animation: nhFadeIn 0.8s ease;
+}
+
+/* Titre en gras (si utilisé) dans la conclusion */
+.nh-conclusion-text strong {
+  display: block;
+  font-style: normal;
   font-size: 1.3rem;
-  line-height: 2.2;
+  color: var(--heness-brown);
+  margin-bottom: 1rem;
 }
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 1200px) {
   .nh-story-container { padding: 0 1.5rem; }
 }
+
 @media (max-width: 1024px) {
   .nh-grid-layout { grid-template-columns: 1fr; gap: 3rem; }
   .nh-story-image { height: 360px; margin-top: 2rem; }
   .nh-reverse { direction: ltr; }
 }
+
 @media (max-width: 768px) {
   .nh-story-container { margin: 4rem auto; }
   .nh-story-block { padding: 3rem 0; }

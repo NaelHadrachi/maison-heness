@@ -249,17 +249,18 @@ const produits = [
     image: '/images/Boutique/huileolive.png',
     url: 'https://shoppingenville-lourdes.fr/produit/42812-1759001395'
   },
+
 {
   id: 'coffret-2-bouteilles',
-  nom: 'Coffret 2 Bouteilles',
+  nom: 'Coffret 2 Bouteilles 10 cl',
   description: "Coffret élégant comprenant deux bouteilles de vinaigre ou d'huile au choix.",
   categorie: 'Coffrets',
   prix: 14,
-  image: '/images/Boutique/coffret.png'
+  image: '/images/Boutique/coffret210.png'
 },
 {
   id: 'coffret-3-bouteilles',
-  nom: 'Coffret 3 Bouteilles',
+  nom: 'Coffret 3 Bouteilles 10cl',
   description: "Coffret raffiné avec trois bouteilles pour un voyage gustatif complet.",
   categorie: 'Coffrets',
   prix: 21,

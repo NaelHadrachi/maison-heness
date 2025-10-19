@@ -21,7 +21,7 @@ const Contact = () => {
         <div className="contact-card">
           <i className="fas fa-phone"></i>
           <h3>Téléphone</h3>
-          <a href="tel:+33689426438">06 89 42 64 38</a>
+          <a href="tel:+33689426438"> Élodie : 07 70 71 23 62</a>
         </div>
 
         <div className="contact-card">

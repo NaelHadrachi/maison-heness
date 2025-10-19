@@ -48,7 +48,7 @@ const Vinaigrerie = () => {
             <h3>Expérience Sensorielle</h3>
             <p>
               Dégustation unique et personnalisée dans notre écrin chaleureux. Chaque vinaigre est 
-              présenté, raconté, goûté, compris. Une révélation pour les papilles et l'âme.
+              présenté, raconté, goûté, compris. Une révélation pour les papilles et l'âme. En partant, vous aurez une autre opinion du vinaigre. 
             </p>
           </div>
         </div>
