@@ -23,7 +23,7 @@ const Footer = () => {
               </li>
               <li>
                 <FaPhone className="footer-icon" />
-                <span>06 89 42 64 38</span>
+                <span>07 70 71 23 62</span>
               </li>
               <li>
                 <FaEnvelope className="footer-icon" />
@@ -59,7 +59,7 @@ const Footer = () => {
 
         <div className="footer-bottom">
           <p className="made-by">
-            Site réalisé par <strong>NaexiumTech</strong> — pour toute demande de site, contactez-nous à :{" "}
+            Powered by <strong>NaexiumTech</strong> — for any website request, contact us at:{" "}
             <a
               href="mailto:naexiumtech@gmail.com"
               className="footer-link"
