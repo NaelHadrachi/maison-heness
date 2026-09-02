@@ -1,0 +1,618 @@
+.admin-dashboard {
+  --admin-brown: #5c3a21;
+  --admin-brown-dark: #40291a;
+
+  --admin-burgundy: #6f2d3f;
+
+  --admin-gold: #c8a97e;
+
+  --admin-cream: #f4efe6;
+  --admin-light: #faf7f1;
+
+  --admin-text: #1d1917;
+  --admin-muted: #716962;
+
+  --admin-line: #ddd3c7;
+
+  min-height: calc(100vh - 80px);
+
+  display: grid;
+
+  grid-template-columns:
+    285px
+    1fr;
+
+  background:
+    var(--admin-light);
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.admin-sidebar {
+  min-height:
+    calc(100vh - 80px);
+
+  position: sticky;
+
+  top: 80px;
+
+  display: flex;
+  flex-direction: column;
+
+  box-sizing: border-box;
+
+  padding:
+    45px
+    30px;
+
+  background:
+    var(--admin-brown-dark);
+
+  color: white;
+}
+
+
+.admin-sidebar-small {
+  color:
+    var(--admin-gold);
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.2em;
+
+  text-transform: uppercase;
+}
+
+
+.admin-sidebar h2 {
+  margin:
+    15px
+    0
+    50px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 37px;
+
+  line-height: 0.95;
+
+  font-weight: 400;
+}
+
+
+/* MENU */
+
+.admin-sidebar-menu {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+
+.admin-sidebar-link {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding:
+    13px
+    15px;
+
+  border: none;
+
+  border-radius: 7px;
+
+  background:
+    transparent;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.65
+    );
+
+  text-decoration: none;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  text-align: left;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+
+.admin-sidebar-link.active {
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+
+  color: white;
+}
+
+
+.admin-sidebar-link span {
+  color:
+    var(--admin-gold);
+
+  font-size: 9px;
+
+  letter-spacing:
+    0.08em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.admin-sidebar-link:disabled {
+  cursor:
+    default;
+}
+
+
+/* LOGOUT */
+
+.admin-logout {
+  margin-top: auto;
+
+  padding:
+    13px
+    15px;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.15
+    );
+
+  border-radius: 999px;
+
+  background:
+    transparent;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.7
+    );
+
+  font-family: inherit;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+
+.admin-logout:hover {
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.07
+    );
+
+  color: white;
+}
+
+
+/* =========================
+   CONTENU
+========================= */
+
+.admin-dashboard-content {
+  padding:
+    70px
+    6vw
+    100px;
+}
+
+
+.admin-dashboard-header {
+  display: flex;
+
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 30px;
+
+  margin-bottom: 80px;
+}
+
+
+.admin-dashboard-header span {
+  color:
+    var(--admin-burgundy);
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.2em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.admin-dashboard-header h1 {
+  margin:
+    10px
+    0
+    5px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      55px,
+      6vw,
+      92px
+    );
+
+  font-weight: 400;
+
+  line-height: 0.95;
+
+  letter-spacing:
+    -0.05em;
+}
+
+
+.admin-dashboard-header p {
+  margin: 0;
+
+  color:
+    var(--admin-muted);
+}
+
+
+.admin-view-site {
+  color:
+    var(--admin-burgundy);
+
+  text-decoration: none;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  padding-bottom: 5px;
+
+  border-bottom:
+    1px solid
+    var(--admin-burgundy);
+}
+
+
+/* =========================
+   WELCOME
+========================= */
+
+.admin-welcome-card {
+  display: grid;
+
+  grid-template-columns:
+    1.1fr
+    0.9fr;
+
+  gap: 80px;
+
+  padding:
+    60px
+    0;
+
+  border-top:
+    1px solid
+    var(--admin-line);
+
+  border-bottom:
+    1px solid
+    var(--admin-line);
+}
+
+
+.admin-card-number {
+  color:
+    var(--admin-gold);
+
+  font-size: 11px;
+}
+
+
+.admin-welcome-card h2 {
+  margin:
+    22px
+    0
+    0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      45px,
+      5vw,
+      72px
+    );
+
+  font-weight: 400;
+
+  line-height: 0.96;
+
+  letter-spacing:
+    -0.04em;
+}
+
+
+.admin-welcome-text {
+  align-self: end;
+}
+
+
+.admin-welcome-text p {
+  margin:
+    0
+    0
+    18px;
+
+  color:
+    var(--admin-muted);
+
+  font-size: 16px;
+
+  line-height: 1.8;
+}
+
+
+/* =========================
+   CARTES
+========================= */
+
+.admin-dashboard-cards {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      1fr
+    );
+
+  gap: 0;
+
+  margin-top: 70px;
+
+  border-top:
+    1px solid
+    var(--admin-line);
+}
+
+
+.admin-dashboard-cards article {
+  min-height: 250px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  padding:
+    30px;
+
+  border-right:
+    1px solid
+    var(--admin-line);
+}
+
+
+.admin-dashboard-cards article:first-child {
+  padding-left: 0;
+}
+
+
+.admin-dashboard-cards article:last-child {
+  border-right: none;
+}
+
+
+.admin-dashboard-cards article > span:first-child {
+  color:
+    var(--admin-gold);
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.15em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.admin-dashboard-cards h3 {
+  margin:
+    auto
+    0
+    10px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 29px;
+
+  font-weight: 400;
+}
+
+
+.admin-dashboard-cards p {
+  margin: 0;
+
+  max-width: 280px;
+
+  color:
+    var(--admin-muted);
+
+  line-height: 1.6;
+
+  font-size: 14px;
+}
+
+
+.admin-soon {
+  margin-top: 20px;
+
+  color:
+    var(--admin-burgundy) !important;
+
+  font-size: 10px !important;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 950px) {
+
+  .admin-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+
+  .admin-sidebar {
+    position: static;
+
+    min-height: auto;
+
+    padding:
+      30px;
+
+    flex-direction: row;
+
+    align-items: center;
+
+    gap: 30px;
+  }
+
+
+  .admin-sidebar h2 {
+    margin: 5px 0 0;
+
+    font-size: 25px;
+  }
+
+
+  .admin-sidebar-menu {
+    flex-direction: row;
+
+    margin-left: auto;
+  }
+
+
+  .admin-logout {
+    margin-top: 0;
+  }
+
+
+  .admin-welcome-card {
+    grid-template-columns: 1fr;
+
+    gap: 35px;
+  }
+}
+
+
+@media (max-width: 700px) {
+
+  .admin-dashboard-content {
+    padding:
+      50px
+      24px
+      80px;
+  }
+
+
+  .admin-dashboard-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+
+  .admin-dashboard-cards {
+    grid-template-columns: 1fr;
+  }
+
+
+  .admin-dashboard-cards article {
+    min-height: 190px;
+
+    padding:
+      30px
+      0;
+
+    border-right: none;
+
+    border-bottom:
+      1px solid
+      var(--admin-line);
+  }
+
+
+  .admin-sidebar {
+    flex-wrap: wrap;
+  }
+
+
+  .admin-sidebar-menu {
+    width: 100%;
+
+    order: 3;
+
+    margin: 10px 0 0;
+
+    overflow-x: auto;
+  }
+}

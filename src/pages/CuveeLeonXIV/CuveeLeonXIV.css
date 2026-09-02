@@ -1,0 +1,729 @@
+.cuvee-page {
+  --cream: #f4efe6;
+  --cream-light: #faf7f1;
+
+  --text: #1d1917;
+  --muted: #716962;
+
+  --burgundy: #6f2d3f;
+  --burgundy-dark: #54202f;
+
+  --gold: #a98755;
+  --line: #d9d0c4;
+
+  background: var(--cream-light);
+  color: var(--text);
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.cuvee-hero {
+  min-height: 88vh;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  align-items: center;
+
+  gap: 80px;
+
+  padding: 105px 7vw 90px;
+
+  background:
+    linear-gradient(
+      115deg,
+      #faf7f1 0%,
+      #f5eee4 100%
+    );
+
+  border-bottom: 1px solid var(--line);
+}
+
+.cuvee-hero-text {
+  max-width: 700px;
+}
+
+.cuvee-overline {
+  display: block;
+
+  margin-bottom: 28px;
+
+  color: var(--burgundy);
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.cuvee-hero h1 {
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: clamp(
+    70px,
+    8vw,
+    135px
+  );
+
+  font-weight: 400;
+
+  line-height: 0.82;
+
+  letter-spacing: -0.055em;
+}
+
+.cuvee-hero h1 span {
+  display: block;
+
+  margin-top: 12px;
+
+  color: var(--burgundy);
+
+  font-style: italic;
+}
+
+.cuvee-intro {
+  max-width: 560px;
+
+  margin-top: 36px;
+
+  color: var(--muted);
+
+  font-size: 18px;
+
+  line-height: 1.75;
+}
+
+
+/* =========================
+   ACTIONS HERO
+========================= */
+
+.cuvee-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 24px;
+
+  margin-top: 34px;
+
+  flex-wrap: wrap;
+}
+
+.cuvee-btn {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 14px 22px;
+
+  border-radius: 999px;
+
+  background: var(--burgundy);
+  color: white;
+
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
+}
+
+.cuvee-btn:hover {
+  background: var(--burgundy-dark);
+
+  transform: translateY(-2px);
+}
+
+.cuvee-article-link {
+  display: inline-block;
+
+  color: var(--burgundy);
+
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  padding-bottom: 4px;
+
+  border-bottom:
+    1px solid
+    var(--burgundy);
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.cuvee-article-link:hover {
+  opacity: 0.7;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================
+   IMAGE HERO
+========================= */
+
+.cuvee-hero-media {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.cuvee-product-image {
+  width: min(
+    620px,
+    100%
+  );
+
+  height: auto;
+
+  display: block;
+
+  object-fit: contain;
+
+  border-radius: 22px;
+
+  box-shadow:
+    0 24px 60px
+    rgba(
+      70,
+      45,
+      36,
+      0.12
+    );
+}
+
+
+/* =========================
+   ELEMENTS COMMUNS
+========================= */
+
+.cuvee-number {
+  color: var(--gold);
+
+  font-size: 12px;
+
+  letter-spacing: 0.08em;
+}
+
+.cuvee-label {
+  margin:
+    7px
+    0
+    18px;
+
+  color: var(--burgundy);
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.2em;
+
+  text-transform: uppercase;
+}
+
+.cuvee-story h2,
+.cuvee-composition h2,
+.cuvee-collab h2 {
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: clamp(
+    48px,
+    5vw,
+    82px
+  );
+
+  font-weight: 400;
+
+  line-height: 0.96;
+
+  letter-spacing: -0.04em;
+}
+
+
+/* =========================
+   HISTOIRE
+========================= */
+
+.cuvee-story {
+  display: grid;
+
+  grid-template-columns:
+    1.15fr
+    0.85fr;
+
+  gap: 100px;
+
+  padding: 120px 7vw;
+
+  background: var(--cream-light);
+
+  border-bottom:
+    1px solid
+    var(--line);
+}
+
+.cuvee-section-heading {
+  display: grid;
+
+  grid-template-columns:
+    auto
+    1fr;
+
+  gap: 28px;
+}
+
+.cuvee-story-text {
+  align-self: end;
+
+  max-width: 470px;
+}
+
+.cuvee-story-text p {
+  margin:
+    0
+    0
+    22px;
+
+  color: var(--muted);
+
+  font-size: 17px;
+
+  line-height: 1.8;
+}
+
+
+/* =========================
+   COMPOSITION
+========================= */
+
+.cuvee-composition {
+  padding: 120px 7vw;
+
+  background: var(--cream);
+}
+
+.cuvee-composition-heading {
+  display: grid;
+
+  grid-template-columns:
+    auto
+    1fr;
+
+  gap: 28px;
+
+  margin-bottom: 78px;
+}
+
+.cuvee-ingredients {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      1fr
+    );
+
+  gap: 0;
+
+  border-top:
+    1px solid
+    var(--line);
+}
+
+.cuvee-ingredient {
+  min-height: 300px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: space-between;
+
+  padding:
+    28px
+    30px
+    30px
+    0;
+}
+
+.cuvee-ingredient
++
+.cuvee-ingredient {
+  padding-left: 30px;
+
+  border-left:
+    1px solid
+    var(--line);
+}
+
+.cuvee-ingredient > span {
+  color: var(--gold);
+
+  font-size: 12px;
+}
+
+.cuvee-ingredient h3 {
+  margin:
+    0
+    0
+    12px;
+
+  font-family:
+    Georgia,
+    serif;
+
+  font-size: clamp(
+    28px,
+    2.5vw,
+    42px
+  );
+
+  font-weight: 400;
+}
+
+.cuvee-ingredient p {
+  max-width: 300px;
+
+  margin: 0;
+
+  color: var(--muted);
+
+  line-height: 1.7;
+}
+
+
+/* =========================
+   COLLABORATION
+========================= */
+
+.cuvee-collab {
+  padding: 120px 7vw;
+
+  background: var(--cream-light);
+
+  border-top:
+    1px solid
+    var(--line);
+}
+
+.cuvee-collab-heading {
+  display: grid;
+
+  grid-template-columns:
+    auto
+    1fr;
+
+  gap: 28px;
+
+  margin-bottom: 70px;
+}
+
+.cuvee-collab-layout {
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    0.8fr;
+
+  gap: 90px;
+
+  align-items: center;
+
+  padding-top: 35px;
+
+  border-top:
+    1px solid
+    var(--line);
+}
+
+.cuvee-collab-content {
+  max-width: 650px;
+}
+
+.cuvee-collab-content p {
+  margin:
+    0
+    0
+    20px;
+
+  color: var(--muted);
+
+  font-size: 17px;
+
+  line-height: 1.8;
+}
+
+.cuvee-collab-link {
+  display: inline-block;
+
+  margin-top: 18px;
+
+  color: var(--burgundy);
+
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  padding-bottom: 5px;
+
+  border-bottom:
+    1px solid
+    var(--burgundy);
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.cuvee-collab-link:hover {
+  opacity: 0.7;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================
+   LOGO SELS DE GRUISSAN
+========================= */
+
+.cuvee-collab-logo-wrap {
+  min-height: 340px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px 30px;
+}
+
+.cuvee-collab-logo {
+  display: block;
+
+  width: min(
+    360px,
+    85%
+  );
+
+  max-height: 340px;
+
+  height: auto;
+
+  object-fit: contain;
+
+  filter: contrast(1.03);
+
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.cuvee-collab-logo:hover {
+  transform: scale(1.02);
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 1050px) {
+
+  .cuvee-ingredients {
+    grid-template-columns:
+      repeat(
+        2,
+        1fr
+      );
+  }
+
+  .cuvee-ingredient:nth-child(3) {
+    border-left: none;
+
+    padding-left: 0;
+
+    border-top:
+      1px solid
+      var(--line);
+  }
+
+  .cuvee-ingredient:nth-child(4) {
+    border-top:
+      1px solid
+      var(--line);
+  }
+}
+
+
+@media (max-width: 950px) {
+
+  .cuvee-hero {
+    grid-template-columns:
+      1fr;
+
+    gap: 55px;
+
+    padding-top: 80px;
+  }
+
+  .cuvee-hero-media {
+    justify-content: flex-start;
+  }
+
+  .cuvee-product-image {
+    width:
+      min(
+        620px,
+        100%
+      );
+  }
+
+  .cuvee-story {
+    grid-template-columns:
+      1fr;
+
+    gap: 55px;
+  }
+
+  .cuvee-collab-layout {
+    grid-template-columns:
+      1fr;
+
+    gap: 40px;
+  }
+
+  .cuvee-collab-logo-wrap {
+    min-height: 260px;
+
+    justify-content: flex-start;
+
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .cuvee-collab-logo {
+    width: min(
+      320px,
+      80%
+    );
+  }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+  .cuvee-hero,
+  .cuvee-story,
+  .cuvee-composition,
+  .cuvee-collab {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .cuvee-hero {
+    padding-top: 60px;
+
+    padding-bottom: 65px;
+  }
+
+  .cuvee-hero h1 {
+    font-size: 62px;
+  }
+
+  .cuvee-intro {
+    font-size: 16px;
+  }
+
+  .cuvee-section-heading,
+  .cuvee-composition-heading,
+  .cuvee-collab-heading {
+    grid-template-columns:
+      1fr;
+
+    gap: 12px;
+  }
+
+  .cuvee-actions {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+  .cuvee-product-image {
+    border-radius: 14px;
+  }
+
+  .cuvee-ingredients {
+    grid-template-columns:
+      1fr;
+  }
+
+  .cuvee-ingredient {
+    min-height: 170px;
+
+    padding:
+      28px
+      0;
+  }
+
+  .cuvee-ingredient
+  +
+  .cuvee-ingredient {
+    padding-left: 0;
+
+    border-left: none;
+
+    border-top:
+      1px solid
+      var(--line);
+  }
+
+  .cuvee-ingredient:nth-child(3) {
+    padding-left: 0;
+  }
+
+  .cuvee-collab-logo-wrap {
+    min-height: 220px;
+
+    justify-content: center;
+
+    padding: 15px 0;
+  }
+
+  .cuvee-collab-logo {
+    width: min(
+      280px,
+      85%
+    );
+  }
+}

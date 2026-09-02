@@ -2,199 +2,697 @@
   --primary-dark: #5c3a21;
   --primary-medium: #8b5a2b;
   --primary-light: #d2b48c;
+
   --primary-soft: #f5e7d9;
+
   --beige: #f8f1e5;
+
   --gold: #c8a97e;
+
   --white: #ffffff;
+
+  --cuvee-burgundy: #7b2d43;
+  --cuvee-burgundy-light: #a85770;
+
   --transition-speed: 0.3s;
 }
 
+
+/* =========================
+   NAVBAR
+========================= */
+
 .navbar {
-  background-color: var(--primary-dark);
-  color: var(--white);
   position: fixed;
+
   top: 0;
   left: 0;
   right: 0;
+
   z-index: 1000;
-  box-shadow: 0 2px 10px rgba(92, 58, 33, 0.2);
-  transition: all var(--transition-speed) ease;
+
   padding: 1.5rem 2rem;
+
+  background-color: var(--primary-dark);
+
+  color: var(--white);
+
+  box-shadow:
+    0 2px 10px
+    rgba(
+      92,
+      58,
+      33,
+      0.2
+    );
+
+  transition:
+    padding var(--transition-speed) ease,
+    background-color var(--transition-speed) ease,
+    box-shadow var(--transition-speed) ease;
 }
 
-.navbar-placeholder {
-  height: 80px; /* Hauteur de la navbar par défaut */
-  transition: height var(--transition-speed) ease;
-}
 
 .navbar.scrolled {
-  padding: 0.8rem 2rem;
-  background-color: rgba(92, 58, 33, 0.95);
+  padding:
+    0.8rem
+    2rem;
+
+  background-color:
+    rgba(
+      92,
+      58,
+      33,
+      0.95
+    );
+
   backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+
+  box-shadow:
+    0 4px 18px
+    rgba(
+      92,
+      58,
+      33,
+      0.25
+    );
 }
 
-.navbar.scrolled + .navbar-placeholder {
-  height: 60px; /* Hauteur réduite quand scrolled */
+
+/* =========================
+   PLACEHOLDER
+========================= */
+
+.navbar-placeholder {
+  height: 80px;
+
+  transition:
+    height
+    var(--transition-speed)
+    ease;
 }
+
+
+.navbar.scrolled
++
+.navbar-placeholder {
+  height: 60px;
+}
+
+
+/* =========================
+   CONTAINER
+========================= */
 
 .navbar-container {
+  width: 100%;
+
+  max-width: 1300px;
+
+  margin: 0 auto;
+
   display: flex;
+
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
+
+  gap: 2rem;
 }
 
-.logo a {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--gold);
-  text-decoration: none;
-  letter-spacing: 0.5px;
-  transition: color var(--transition-speed) ease;
+
+/* =========================
+   LOGO
+========================= */
+
+.logo {
+  margin: 0;
+
+  flex-shrink: 0;
 }
+
+
+.logo a {
+  color: var(--gold);
+
+  text-decoration: none;
+
+  font-family:
+    'Playfair Display',
+    Georgia,
+    serif;
+
+  font-size: 1.8rem;
+
+  font-weight: 700;
+
+  letter-spacing: 0.5px;
+
+  white-space: nowrap;
+
+  transition:
+    color
+    var(--transition-speed)
+    ease;
+}
+
 
 .logo a:hover {
   color: var(--primary-soft);
 }
 
+
+/* =========================
+   MENU
+========================= */
+
 .nav-menu {
   display: flex;
+
+  align-items: center;
 }
+
 
 .nav-links {
   display: flex;
+
+  align-items: center;
+
   list-style: none;
-  gap: 2rem;
+
+  gap: 1.45rem;
+
   margin: 0;
+
   padding: 0;
 }
+
 
 .nav-links li {
   position: relative;
 }
 
+
+/* =========================
+   LIENS
+========================= */
+
 .nav-links li a {
-  color: var(--primary-soft);
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 1.1rem;
-  letter-spacing: 0.5px;
-  padding: 0.5rem 0;
   position: relative;
-  transition: all var(--transition-speed) ease;
+
+  display: inline-block;
+
+  padding:
+    0.5rem
+    0;
+
+  color: var(--primary-soft);
+
+  text-decoration: none;
+
+  font-size: 0.96rem;
+
+  font-weight: 500;
+
+  letter-spacing: 0.35px;
+
+  white-space: nowrap;
+
+  transition:
+    color var(--transition-speed) ease,
+    opacity var(--transition-speed) ease;
 }
+
 
 .nav-links li a:hover,
 .nav-links li a.active {
   color: var(--gold);
 }
 
+
+/* SOULIGNEMENT */
+
 .nav-links li a::after {
   content: '';
+
   position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: 0;
+
   left: 0;
+  bottom: 0;
+
+  width: 0;
+
+  height: 2px;
+
   background-color: var(--gold);
-  transition: width var(--transition-speed) ease;
+
+  transition:
+    width
+    var(--transition-speed)
+    ease;
 }
+
 
 .nav-links li a:hover::after,
 .nav-links li a.active::after {
   width: 100%;
 }
 
-/* Menu Burger */
+
+/* =========================
+   CUVÉE LÉON XIV
+========================= */
+
+.nav-links li a.cuvee-nav-link {
+  color: #f3d9df;
+
+  font-weight: 600;
+}
+
+
+.nav-links li a.cuvee-nav-link:hover,
+.nav-links li a.cuvee-nav-link.active {
+  color: #ffffff;
+}
+
+
+.nav-links li a.cuvee-nav-link::after {
+  background-color: #e5bcc7;
+}
+
+
+/* =========================
+   ADMIN
+========================= */
+
+.admin-nav-item {
+  display: flex;
+
+  align-items: center;
+
+  margin-left: 0.15rem;
+}
+
+
+.nav-links li a.admin-nav-link {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding:
+    8px
+    14px;
+
+  border:
+    1px solid
+    rgba(
+      200,
+      169,
+      126,
+      0.45
+    );
+
+  border-radius: 999px;
+
+  color: var(--gold);
+
+  font-size: 0.86rem;
+
+  font-weight: 600;
+
+  letter-spacing: 0.3px;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+
+.nav-links li a.admin-nav-link::after {
+  display: none;
+}
+
+
+.nav-links li a.admin-nav-link:hover {
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+
+  border-color: var(--gold);
+
+  color: #ffffff;
+
+  transform:
+    translateY(-1px);
+}
+
+
+.nav-links li a.admin-nav-link.active {
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.1
+    );
+
+  border-color: var(--gold);
+
+  color: #ffffff;
+}
+
+
+.admin-nav-icon {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 10px;
+
+  line-height: 1;
+}
+
+
+/* =========================
+   BOUTON BURGER
+========================= */
+
 .menu-toggle {
   display: none;
-  flex-direction: column;
-  justify-content: space-between;
+
   width: 30px;
-  height: 21px;
+  height: 22px;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  flex-direction: column;
+
+  justify-content: space-between;
+
   cursor: pointer;
+
   z-index: 1100;
-  position: relative;
 }
+
 
 .menu-toggle span {
   display: block;
-  height: 3px;
+
   width: 100%;
+  height: 3px;
+
   background-color: var(--gold);
+
   border-radius: 3px;
-  transition: all 0.3s ease;
-  transform-origin: center;
+
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
 }
 
-.menu-toggle.open span:nth-child(1) {
-  transform: translateY(9px) rotate(45deg);
+
+.menu-toggle.open
+span:nth-child(1) {
+  transform:
+    translateY(9.5px)
+    rotate(45deg);
 }
 
-.menu-toggle.open span:nth-child(2) {
+
+.menu-toggle.open
+span:nth-child(2) {
   opacity: 0;
 }
 
-.menu-toggle.open span:nth-child(3) {
-  transform: translateY(-9px) rotate(-45deg);
+
+.menu-toggle.open
+span:nth-child(3) {
+  transform:
+    translateY(-9.5px)
+    rotate(-45deg);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+
+/* =========================
+   ÉCRANS MOYENS
+========================= */
+
+@media (max-width: 1180px) {
+
+  .navbar-container {
+    gap: 1rem;
+  }
+
+
+  .nav-links {
+    gap: 1rem;
+  }
+
+
+  .nav-links li a {
+    font-size: 0.9rem;
+  }
+
+
+  .nav-links li a.admin-nav-link {
+    padding:
+      7px
+      11px;
+
+    font-size: 0.8rem;
+  }
+
+
+  .logo a {
+    font-size: 1.55rem;
+  }
+}
+
+
+/* =========================
+   TABLETTE / MOBILE
+========================= */
+
+@media (max-width: 900px) {
+
   .navbar {
     padding: 1rem;
   }
-  
+
+
+  .navbar.scrolled {
+    padding:
+      0.8rem
+      1rem;
+  }
+
+
   .navbar-placeholder {
     height: 70px;
   }
-  
-  .navbar.scrolled + .navbar-placeholder {
-    height: 50px;
+
+
+  .navbar.scrolled
+  +
+  .navbar-placeholder {
+    height: 55px;
   }
-  
+
+
   .menu-toggle {
     display: flex;
   }
-  
+
+
   .nav-menu {
     position: fixed;
+
     top: 0;
     right: -100%;
+
     width: 100%;
+
     height: 100vh;
-    background-color: var(--primary-dark);
+
+    box-sizing: border-box;
+
+    display: flex;
+
     flex-direction: column;
+
     align-items: center;
     justify-content: center;
-    transition: right 0.5s ease;
+
+    padding:
+      90px
+      1.5rem
+      40px;
+
+    background:
+      linear-gradient(
+        160deg,
+        #5c3a21 0%,
+        #4b2d1c 100%
+      );
+
+    transition:
+      right
+      0.45s
+      ease;
+
     z-index: 1000;
-    padding-top: 70px; /* Espace pour la navbar */
+
+    overflow-y: auto;
   }
-  
+
+
   .nav-menu.open {
     right: 0;
   }
-  
+
+
   .nav-links {
-    flex-direction: column;
-    align-items: center;
-    gap: 2.5rem;
     width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 1.45rem;
   }
-  
+
+
+  .nav-links li {
+    width: 100%;
+
+    text-align: center;
+  }
+
+
   .nav-links li a {
-    font-size: 1.3rem;
-    padding: 0.5rem 1rem;
+    display: inline-block;
+
+    font-size: 1.2rem;
+
+    padding:
+      0.5rem
+      1rem;
   }
-  
+
+
   .nav-links li a::after {
-    height: 3px;
+    height: 2px;
   }
-  
-  .navbar.scrolled {
-    padding: 0.8rem 1rem;
+
+
+  /* CUVÉE */
+
+  .nav-links li a.cuvee-nav-link {
+    padding:
+      0.75rem
+      1.25rem;
+
+    color: #f6dbe1;
+
+    border:
+      1px solid
+      rgba(
+        200,
+        169,
+        126,
+        0.45
+      );
+
+    border-radius: 999px;
+  }
+
+
+  .nav-links li a.cuvee-nav-link::after {
+    display: none;
+  }
+
+
+  .nav-links li a.cuvee-nav-link:hover,
+  .nav-links li a.cuvee-nav-link.active {
+    background:
+      rgba(
+        255,
+        255,
+        255,
+        0.08
+      );
+
+    color: #ffffff;
+
+    border-color: var(--gold);
+  }
+
+
+  /* ADMIN */
+
+  .admin-nav-item {
+    margin-top: 8px;
+  }
+
+
+  .nav-links li a.admin-nav-link {
+    min-width: 150px;
+
+    padding:
+      0.8rem
+      1.4rem;
+
+    font-size: 1rem;
+
+    border-color:
+      rgba(
+        200,
+        169,
+        126,
+        0.6
+      );
+  }
+}
+
+
+/* =========================
+   PETITS MOBILES
+========================= */
+
+@media (max-width: 420px) {
+
+  .logo a {
+    font-size: 1.4rem;
+  }
+
+
+  .nav-links {
+    gap: 1.2rem;
+  }
+
+
+  .nav-links li a {
+    font-size: 1.08rem;
+  }
+
+
+  .nav-links li a.admin-nav-link {
+    font-size: 0.95rem;
   }
 }
