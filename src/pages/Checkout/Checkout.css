@@ -1,0 +1,145 @@
+.checkout-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.2rem 3rem;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 2rem;
+}
+
+.checkout-summary,
+.checkout-form {
+  background: #fffdf8;
+  border: 1px solid #eadcc2;
+  border-radius: 24px;
+  box-shadow: 0 18px 36px rgba(78, 55, 31, 0.08);
+  padding: 1.5rem;
+}
+
+.checkout-summary h1,
+.checkout-empty h1 {
+  margin-top: 0;
+  color: #2c231d;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+}
+
+.checkout-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.checkout-item {
+  display: grid;
+  grid-template-columns: 86px 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #eee3d6;
+}
+
+.checkout-item-media img {
+  width: 86px;
+  height: 86px;
+  object-fit: cover;
+  border-radius: 14px;
+  background: #f5efe7;
+}
+
+.checkout-item-info h2 {
+  margin: 0 0 0.2rem;
+  font-size: 1rem;
+  color: #2d241d;
+}
+
+.checkout-item-info p {
+  margin: 0;
+  color: #7a685f;
+}
+
+.checkout-total {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee3d6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+  color: #352d28;
+}
+
+.checkout-total strong {
+  font-size: 1.6rem;
+}
+
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.checkout-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  color: #352d28;
+  font-weight: 600;
+}
+
+.checkout-form input,
+.checkout-form textarea {
+  border: 1px solid #e3d8c7;
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  background: #fff;
+  color: #2d241d;
+  font: inherit;
+}
+
+.shipping-mode {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.shipping-mode label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid #e8dac2;
+  background: #f9f2e8;
+  border-radius: 12px;
+  padding: 0.8rem 0.9rem;
+  font-weight: 600;
+}
+
+.checkout-submit {
+  background: linear-gradient(135deg, #6a4e23, #90704b);
+  border-radius: 12px;
+  padding: 1rem;
+  font-weight: 700;
+}
+
+.checkout-message {
+  margin: 0;
+  font-weight: 700;
+  color: #8b4d3b;
+}
+
+.checkout-empty {
+  max-width: 720px;
+  margin: 3rem auto 0;
+  text-align: center;
+  padding: 2rem 1rem 3rem;
+}
+
+.checkout-empty p {
+  color: #5f4b39;
+  margin: 1rem 0 1.4rem;
+}
+
+@media (max-width: 820px) {
+  .checkout-page {
+    grid-template-columns: 1fr;
+  }
+}

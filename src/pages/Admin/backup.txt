@@ -1,0 +1,1317 @@
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
+import {
+  createAdminPage,
+  createAdminProduct,
+  createShipment,
+  createShipmentTest,
+  deleteAdminPage,
+  deleteAdminProduct,
+  downloadShipmentLabel,
+  fetchAdminOrders,
+  fetchAdminProducts,
+  fetchAdminUsers,
+  fetchAdminPages,
+  fetchShippingPickupPoints,
+  presignUpload,
+  publishAdminPage,
+  trackShipment,
+  unpublishAdminPage,
+  updateAdminPage,
+  updateAdminProduct,
+} from '../../services/api';
+
+const sidebarSections = [
+  { key: 'overview', label: 'Vue d’ensemble' },
+  { key: 'orders', label: 'Commandes' },
+  { key: 'shipping', label: 'Shipping' },
+  { key: 'products', label: 'Produits' },
+  { key: 'pages', label: 'Pages' },
+  { key: 'builder', label: 'Éditeur de pages' },
+  { key: 'users', label: 'Utilisateurs' },
+  { key: 'media', label: 'Médias' },
+];
+
+const emptyPageForm = {
+  title: '',
+  slug: '',
+  content: '',
+  description: '',
+  published: false,
+};
+
+const emptyProductForm = {
+  nom: '',
+  description: '',
+  categorie: 'epicerie',
+  prix: '',
+  stock: '',
+  image: '',
+};
+
+const emptyShippingForm = {
+  postalCode: '75001',
+  country: 'FR',
+  city: 'Paris',
+  pickupPointId: '08882',
+  pickupPointCountry: 'FR',
+  weight: 1500,
+  reference: 'CMD-12345',
+  value: 2500,
+  shipper: {
+    name: 'Jean Dupont',
+    address: '12 Rue de la Paix',
+    city: 'Paris',
+    postalCode: '75002',
+    country: 'FR',
+    phone: '+33612345678',
+    email: 'jean.dupont@example.com',
+  },
+  recipient: {
+    name: 'Jean Dupont',
+    address: '12 Rue de la Paix',
+    city: 'Paris',
+    postalCode: '75002',
+    country: 'FR',
+    phone: '+33612345678',
+    email: 'jean.dupont@example.com',
+  },
+};
+
+const statusClasses = {
+  PENDING: 'bg-[#fff1d8] text-[#7d5c2b]',
+  PAID: 'bg-[#e7f7ee] text-[#1d6b4d]',
+  SHIPPED: 'bg-[#e8f0ff] text-[#365db1]',
+  DELIVERED: 'bg-[#e9ebf7] text-[#3e4b8f]',
+  CANCELLED: 'bg-[#fde8e8] text-[#9a3f3f]',
+  ACTIVE: 'bg-[#e8f7ec] text-[#1d6b4d]',
+  DRAFT: 'bg-[#f5eedc] text-[#7a5a2c]',
+  PUBLISHED: 'bg-[#eaf5ec] text-[#2d6a3d]',
+  CUSTOMER: 'bg-[#f5efe9] text-[#5c4a3c]',
+  ADMIN: 'bg-[#eae1d1] text-[#3c2b21]',
+  DEFAULT: 'bg-[#f5efe9] text-[#5c4a3c]',
+};
+
+const normalizeCollection = (value) => {
+  if (Array.isArray(value)) return value;
+  if (Array.isArray(value?.data)) return value.data;
+  if (Array.isArray(value?.items)) return value.items;
+  if (Array.isArray(value?.orders)) return value.orders;
+  if (Array.isArray(value?.users)) return value.users;
+  if (Array.isArray(value?.products)) return value.products;
+  if (Array.isArray(value?.pages)) return value.pages;
+  if (value && typeof value === 'object') {
+    if (Array.isArray(value?.user)) return value.user;
+    if (value?.user) return [value.user];
+    if (value?.data && typeof value.data === 'object') return [value.data];
+    if (value?.profile) return [value.profile];
+  }
+  return [];
+};
+
+const toNumber = (value) => {
+  const parsed = Number(value ?? 0);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
+const toSlug = (value) =>
+  String(value ?? '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'nouvelle-page';
+
+const pageDraftFromPage = (page = {}) => ({
+  title: page.title || page.name || '',
+  slug: page.slug || '',
+  content: page.content || page.body || '',
+  description: page.description || '',
+  published: page.published === true || page.status === 'PUBLISHED',
+});
+
+const productDraftFromProduct = (product = {}) => ({
+  nom: product.nom || product.name || product.title || '',
+  description: product.description || product.summary || '',
+  categorie: product.categorie || product.category || 'epicerie',
+  prix: product.prix ?? product.price ?? '',
+  stock: product.stock ?? product.quantity ?? '',
+  image: product.image || product.thumbnail || '',
+});
+
+const getOrderValue = (order) => {
+  const candidates = [
+    order?.total,
+    order?.totalAmount,
+    order?.amount,
+    order?.grandTotal,
+    order?.price,
+    order?.total_price,
+    order?.checkout?.total,
+    order?.checkout?.amount,
+  ];
+
+  return candidates.reduce((max, candidate) => {
+    const value = toNumber(candidate);
+    return value > max ? value : max;
+  }, 0);
+};
+
+const getPageStatus = (page) => {
+  if (page?.published === true || page?.status === 'PUBLISHED') return 'PUBLISHED';
+  if (page?.published === false || page?.status === 'DRAFT') return 'DRAFT';
+  return page?.status || 'DRAFT';
+};
+
+const getOrderStatus = (order) => {
+  const value = order?.status || order?.state || 'PENDING';
+  return String(value).toUpperCase();
+};
+
+const formatCurrency = (value) =>
+  new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency: 'EUR',
+  }).format(toNumber(value));
+
+const formatShipmentLabel = (value) => {
+  if (!value) return '—';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'object') {
+    return value.label || value.number || value.shipmentNumber || value.id || 'Expédition';
+  }
+  return String(value);
+};
+
+const makeId = () => `section-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+
+const getSectionDefaultContent = (type) => {
+  switch (type) {
+    case 'hero':
+      return { heading: 'Nouveau titre', subheading: 'Sous-titre de la section' };
+    case 'heading':
+      return { text: 'Nouveau sous-titre' };
+    case 'text':
+      return { text: 'Rédigez votre contenu ici...' };
+    case 'richText':
+      return { html: '<p>Votre contenu HTML.</p>' };
+    case 'cta':
+      return {
+        heading: 'Une question ?',
+        description: 'Cliquez ici pour découvrir la suite.',
+        buttonText: 'Découvrir',
+        buttonUrl: '/boutique',
+      };
+    case 'features':
+      return {
+        title: 'Nos engagements',
+        items: [
+          { title: 'Qualité Premium', description: 'Description de l’élément.' },
+          { title: 'Fabrication Artisanale', description: 'Description de l’élément.' },
+        ],
+      };
+    case 'image':
+      return {
+        url: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80',
+        alt: 'Image de présentation',
+        caption: 'Légende de l’image',
+      };
+    case 'gallery':
+      return {
+        title: 'Galerie',
+        images: [
+          { url: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80', alt: 'Photo 1' },
+          { url: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=80', alt: 'Photo 2' },
+        ],
+      };
+    case 'divider':
+      return {};
+    default:
+      return {};
+  }
+};
+
+const createSection = (type = 'hero', content = {}) => ({
+  id: makeId(),
+  type,
+  content: { ...getSectionDefaultContent(type), ...content },
+});
+
+const createBuilderPage = (source = {}) => ({
+  id: source.id || null,
+  title: source.title || '',
+  slug: source.slug || '',
+  published: source.published ?? true,
+  showInNavbar: source.showInNavbar ?? true,
+  navbarLabel: source.navbarLabel || source.title || '',
+  navbarOrder: source.navbarOrder ?? 1,
+  seoTitle: source.seoTitle || source.title || '',
+  seoDescription: source.seoDescription || '',
+  sections: Array.isArray(source.sections) && source.sections.length > 0
+    ? source.sections.map((section) => ({
+        ...section,
+        id: section.id || makeId(),
+        content: section.content || {},
+      }))
+    : [createSection('hero', { heading: 'Titre principal', subheading: 'Sous-titre de la page' })],
+});
+
+const updateSectionInArray = (sections, sectionId, updater) =>
+  sections.map((section) => (section.id === sectionId ? updater(section) : section));
+
+const SECTION_TYPE_LABELS = {
+  hero: 'Hero',
+  heading: 'Titre',
+  text: 'Texte',
+  richText: 'Texte enrichi',
+  divider: 'Séparateur',
+  cta: 'CTA',
+  features: 'Fonctionnalités',
+  image: 'Image',
+  gallery: 'Galerie',
+};
+
+const updateBuilderContent = (section, field, value) => {
+  if (field === 'items') {
+    return { ...section, content: { ...section.content, items: value } };
+  }
+
+  return {
+    ...section,
+    content: {
+      ...section.content,
+      [field]: value,
+    },
+  };
+};
+
+const getBuilderContentValue = (section, field, fallback = '') => {
+  const value = section?.content?.[field];
+  return value ?? fallback;
+};
+
+export default function AdminDashboard() {
+  const [activeSection, setActiveSection] = useState('overview');
+  const [token, setToken] = useState(null);
+  const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+  const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [pages, setPages] = useState([]);
+  const [pickupPoints, setPickupPoints] = useState([]);
+  const [shipments, setShipments] = useState([]);
+  const [pagePreview, setPagePreview] = useState(null);
+  const [builderPage, setBuilderPage] = useState(() => createBuilderPage());
+  const [draggedSectionId, setDraggedSectionId] = useState(null);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      setToken(storedToken);
+      fetchData(storedToken);
+    } else {
+      setError('Vous devez vous connecter.');
+    }
+  }, []);
+
+  const fetchData = async (authToken) => {
+    try {
+      const [ordersData, productsData, usersData, pagesData, pickupPointsData] = await Promise.all([
+        fetchAdminOrders(authToken),
+        fetchAdminProducts(authToken),
+        fetchAdminUsers(authToken),
+        fetchAdminPages(authToken),
+        fetchShippingPickupPoints(authToken),
+      ]);
+
+      setOrders(normalizeCollection(ordersData));
+      setProducts(normalizeCollection(productsData));
+      setUsers(normalizeCollection(usersData));
+      setPages(normalizeCollection(pagesData));
+      setPickupPoints(normalizeCollection(pickupPointsData));
+    } catch (fetchError) {
+      setError(fetchError.message || 'Erreur lors du chargement des données.');
+    }
+  };
+
+  const loadDashboard = async () => {
+    if (!token) return;
+    setError('');
+    try {
+      await fetchData(token);
+      setNotice('Données du tableau de bord mises à jour.');
+    } catch (loadError) {
+      setError(loadError.message || 'Erreur lors du chargement du tableau de bord.');
+    }
+  };
+
+  const openPageBuilder = (page = {}) => {
+    setBuilderPage(createBuilderPage(page));
+    setActiveSection('pages');
+  };
+
+  const updateBuilderSection = (sectionId, updater) => {
+    setBuilderPage((current) => ({
+      ...current,
+      sections: updateSectionInArray(current.sections, sectionId, (section) => ({
+        ...section,
+        ...updater(section),
+      })),
+    }));
+  };
+
+  const handleBuilderPageSubmit = async (event) => {
+    event.preventDefault();
+    if (!token) return;
+
+    const title = builderPage.title.trim();
+    if (!title) {
+      setError('Le titre de la page est obligatoire.');
+      return;
+    }
+
+    try {
+      setError('');
+      const payload = {
+        title,
+        slug: (builderPage.slug || toSlug(title)).trim(),
+        published: Boolean(builderPage.published),
+        showInNavbar: Boolean(builderPage.showInNavbar),
+        navbarLabel: builderPage.navbarLabel || title,
+        navbarOrder: toNumber(builderPage.navbarOrder || 1),
+        seoTitle: builderPage.seoTitle || title,
+        seoDescription: builderPage.seoDescription || '',
+        sections: builderPage.sections.map((section) => ({
+          id: section.id,
+          type: section.type,
+          content: section.content || {},
+        })),
+      };
+
+      if (builderPage.id) {
+        await updateAdminPage(builderPage.id, token, payload);
+        setNotice('La page a bien été mise à jour.');
+      } else {
+        await createAdminPage(token, payload);
+        setNotice('La page a bien été créée.');
+      }
+
+      await loadDashboard();
+      setBuilderPage(createBuilderPage({
+        title: '',
+        slug: '',
+        published: true,
+        showInNavbar: true,
+        navbarLabel: '',
+        navbarOrder: 1,
+        seoTitle: '',
+        seoDescription: '',
+        sections: [createSection('hero', { heading: 'Nouvelle page', subheading: 'Commencez votre contenu ici.' })],
+      }));
+    } catch (submitError) {
+      setError(submitError.message || 'La sauvegarde de la page a échoué.');
+    }
+  };
+
+  const handleAddBuilderSection = (type) => {
+    setBuilderPage((current) => ({
+      ...current,
+      sections: [...current.sections, createSection(type)],
+    }));
+  };
+
+  const handleRemoveBuilderSection = (sectionId) => {
+    setBuilderPage((current) => ({
+      ...current,
+      sections: current.sections.filter((section) => section.id !== sectionId),
+    }));
+  };
+
+  const handleMoveBuilderSection = (fromId, toId) => {
+    if (!fromId || !toId || fromId === toId) return;
+
+    setBuilderPage((current) => {
+      const nextSections = [...current.sections];
+      const fromIndex = nextSections.findIndex((section) => section.id === fromId);
+      const toIndex = nextSections.findIndex((section) => section.id === toId);
+
+      if (fromIndex < 0 || toIndex < 0) return current;
+
+      const [moved] = nextSections.splice(fromIndex, 1);
+      nextSections.splice(toIndex, 0, moved);
+      return { ...current, sections: nextSections };
+    });
+  };
+
+  const handleBuilderFieldChange = (sectionId, field, value) => {
+    setBuilderPage((current) => ({
+      ...current,
+      sections: updateSectionInArray(current.sections, sectionId, (section) => updateBuilderContent(section, field, value)),
+    }));
+  };
+
+  const renderBuilderStack = () => (
+    <div className="space-y-3">
+      {builderPage.sections.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-[#d8c7a7] bg-[#faf5ee] p-5 text-sm text-[#5f4d3c]">
+          Aucune section dans la page.
+        </div>
+      ) : (
+        builderPage.sections.map((section) => (
+          <div
+            key={section.id}
+            draggable
+            onDragStart={() => setDraggedSectionId(section.id)}
+            onDragOver={(event) => event.preventDefault()}
+            onDrop={() => {
+              if (draggedSectionId && draggedSectionId !== section.id) {
+                handleMoveBuilderSection(draggedSectionId, section.id);
+              }
+              setDraggedSectionId(null);
+            }}
+            className="rounded-[20px] border border-[#eadcc2] bg-[#fffdf8] p-3 shadow-sm"
+          >
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a6e52]">{SECTION_TYPE_LABELS[section.type] || section.type}</p>
+                <p className="text-sm font-semibold text-[#2d241d]">Section #{builderPage.sections.findIndex((item) => item.id === section.id) + 1}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleRemoveBuilderSection(section.id)}
+                className="rounded-full border border-[#d7c3a3] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7a5b42] hover:bg-[#f7f0e4]"
+              >
+                Supprimer
+              </button>
+            </div>
+
+            {section.type === 'hero' && (
+              <div className="space-y-2">
+                <input value={getBuilderContentValue(section, 'heading', '')} onChange={(event) => handleBuilderFieldChange(section.id, 'heading', event.target.value)} className="w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm" placeholder="Titre principal" />
+                <textarea value={getBuilderContentValue(section, 'subheading', '')} onChange={(event) => handleBuilderFieldChange(section.id, 'subheading', event.target.value)} rows="2" className="w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm" placeholder="Sous-titre" />
+              </div>
+            )}
+
+            {section.type === 'heading' && (
+              <input value={getBuilderContentValue(section, 'text', '')} onChange={(event) => handleBuilderFieldChange(section.id, 'text', event.target.value)} className="w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm" placeholder="Titre de section" />
+            )}
+
+            {section.type === 'text' && (
+              <textarea value={getBuilderContentValue(section, 'text', '')} onChange={(event) => handleBuilderFieldChange(section.id, 'text', event.target.value)} rows="4" className="w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm" placeholder="Contenu" />
+            )}
+
+            {section.type === 'richText' && (
+              <textarea value={getBuilderContentValue(section, 'html', '<p>Votre contenu HTML.</p>')} onChange={(event) => handleBuilderFieldChange(section.id, 'html', event.target.value)} rows="5" className="w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm font-mono" placeholder="Code HTML" />
+            )}
+
+            {section.type === 'divider' && (
+              <div className="h-px w-full bg-[#c9a86a]" />
+            )}
+
+            {section.type === 'cta' && (
+              <div className="space-y-2">
+                <input value={getBuilderContentValue(section, 'heading', '')} onChange={(event) => handleBuilderFieldChange(section.id, 'heading', event.target.value)} className="w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm" placeholder="Titre du CTA" />
+                <textarea value={getBuilderContentValue(section, 'description', '')} onChange={(event) => handleBuilderFieldChange(section.id, 'description', event.target.value)} rows="2" className="w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm" placeholder="Description" />
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <input value={getBuilderContentValue(section, 'buttonText', '')} onChange={(event) => handleBuilderFieldChange(section.id, 'buttonText', event.target.value)} className="w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm" placeholder="Texte du bouton" />
+                  <input value={getBuilderContentValue(section, 'buttonUrl', '')} onChange={(event) => handleBuilderFieldChange(section.id, 'buttonUrl', event.target.value)} className="w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm" placeholder="URL" />
+                </div>
+              </div>
+            )}
+
+            {section.type === 'features' && (
+              <div className="space-y-2">
+                <input value={getBuilderContentValue(section, 'title', '')} onChange={(event) => handleBuilderFieldChange(section.id, 'title', event.target.value)} className="w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm" placeholder="Titre de la section" />
+                <div className="space-y-2">
+                  {(section.content?.items || []).map((item, index) => (
+                    <div key={`${section.id}-item-${index}`} className="rounded-xl border border-[#eadcc2] bg-[#fdfaf5] p-2">
+                      <input
+                        value={item.title || ''}
+                        onChange={(event) => {
+                          const nextItems = [...(section.content?.items || [])];
+                          nextItems[index] = { ...nextItems[index], title: event.target.value };
+                          handleBuilderFieldChange(section.id, 'items', nextItems);
+                        }}
+                        className="mb-2 w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm"
+                        placeholder="Titre"
+                      />
+                      <textarea
+                        value={item.description || ''}
+                        onChange={(event) => {
+                          const nextItems = [...(section.content?.items || [])];
+                          nextItems[index] = { ...nextItems[index], description: event.target.value };
+                          handleBuilderFieldChange(section.id, 'items', nextItems);
+                        }}
+                        rows="2"
+                        className="w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm"
+                        placeholder="Description"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const nextItems = [...(section.content?.items || []), { title: 'Nouvel élément', description: 'Description...' }];
+                    handleBuilderFieldChange(section.id, 'items', nextItems);
+                  }}
+                  className="rounded bg-[#2e1f16] px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-white"
+                >
+                  Ajouter un élément
+                </button>
+              </div>
+            )}
+
+            {section.type === 'image' && (
+              <div className="space-y-2">
+                <input value={getBuilderContentValue(section, 'url', '')} onChange={(event) => handleBuilderFieldChange(section.id, 'url', event.target.value)} className="w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm" placeholder="URL de l’image" />
+                <input value={getBuilderContentValue(section, 'alt', '')} onChange={(event) => handleBuilderFieldChange(section.id, 'alt', event.target.value)} className="w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm" placeholder="Texte alternatif" />
+                <input value={getBuilderContentValue(section, 'caption', '')} onChange={(event) => handleBuilderFieldChange(section.id, 'caption', event.target.value)} className="w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm" placeholder="Légende" />
+              </div>
+            )}
+
+            {section.type === 'gallery' && (
+              <div className="space-y-2">
+                <input value={getBuilderContentValue(section, 'title', '')} onChange={(event) => handleBuilderFieldChange(section.id, 'title', event.target.value)} className="w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm" placeholder="Titre de la galerie" />
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {(section.content?.images || []).map((image, index) => (
+                    <div key={`${section.id}-image-${index}`} className="rounded-xl border border-[#eadcc2] bg-[#fdfaf5] p-2">
+                      <input
+                        value={image.url || ''}
+                        onChange={(event) => {
+                          const nextImages = [...(section.content?.images || [])];
+                          nextImages[index] = { ...nextImages[index], url: event.target.value };
+                          handleBuilderFieldChange(section.id, 'images', nextImages);
+                        }}
+                        className="mb-2 w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm"
+                        placeholder="URL" 
+                      />
+                      <input
+                        value={image.alt || ''}
+                        onChange={(event) => {
+                          const nextImages = [...(section.content?.images || [])];
+                          nextImages[index] = { ...nextImages[index], alt: event.target.value };
+                          handleBuilderFieldChange(section.id, 'images', nextImages);
+                        }}
+                        className="w-full rounded-md border border-[#e4d3b5] px-3 py-2 text-sm"
+                        placeholder="Alt"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const nextImages = [...(section.content?.images || []), { url: '', alt: 'Image galerie' }];
+                    handleBuilderFieldChange(section.id, 'images', nextImages);
+                  }}
+                  className="rounded bg-[#2e1f16] px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-white"
+                >
+                  Ajouter une image
+                </button>
+              </div>
+            )}
+          </div>
+        ))
+      )}
+    </div>
+  );
+
+  const renderBuilderPreview = () => {
+    const previewSections = builderPage.sections ?? [];
+
+    const blockClasses = 'rounded-[24px] border border-[#eadcc2] bg-[#fffdf8] p-4';
+
+    return (
+      <div className="space-y-4">
+        <div className="rounded-[24px] bg-[#3a2a17] px-5 py-6 text-[#fff8f0] shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#e3c596]">Aperçu</p>
+          <h3 className="mt-3 font-serif text-3xl font-semibold">{builderPage.title || 'Titre de la page'}</h3>
+          {builderPage.seoDescription && <p className="mt-2 text-sm text-[#f0dfc0]">{builderPage.seoDescription}</p>}
+        </div>
+
+        {previewSections.length === 0 ? (
+          <div className="rounded-[24px] border border-dashed border-[#eadcc2] p-6 text-sm text-[#5c4a3c]">Aucune section ajoutée.</div>
+        ) : (
+          previewSections.map((section) => {
+            switch (section.type) {
+              case 'hero':
+                return (
+                  <div key={section.id} className={`${blockClasses} bg-[#f9f4ee]`}>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#8a6e52]">Hero</p>
+                    <h4 className="mt-3 font-serif text-3xl text-[#2d241d]">{section.content?.heading || 'Titre principal'}</h4>
+                    {section.content?.subheading && <p className="mt-2 text-[#5c4a3c]">{section.content.subheading}</p>}
+                  </div>
+                );
+              case 'heading':
+                return (
+                  <div key={section.id} className={blockClasses}>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#8a6e52]">Heading</p>
+                    <h4 className="mt-3 font-serif text-2xl text-[#2d241d]">{section.content?.text || 'Sous-titre'}</h4>
+                  </div>
+                );
+              case 'text':
+                return (
+                  <div key={section.id} className={blockClasses}>
+                    <p className="text-sm leading-relaxed text-[#2b2117] whitespace-pre-wrap">{section.content?.text || 'Votre texte ici...'}</p>
+                  </div>
+                );
+              case 'richText':
+                return (
+                  <div key={section.id} className={blockClasses}>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#8a6e52]">Rich text</p>
+                    <div className="mt-3 text-sm leading-relaxed text-[#2b2117]" dangerouslySetInnerHTML={{ __html: section.content?.html || '<p>Votre contenu HTML.</p>' }} />
+                  </div>
+                );
+              case 'divider':
+                return <div key={section.id} className="my-2 h-px bg-[#c9a86a]" />;
+              case 'features':
+                return (
+                  <div key={section.id} className={blockClasses}>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#8a6e52]">Features</p>
+                    <h4 className="mt-3 font-serif text-2xl text-[#2d241d]">{section.content?.title || 'Nos engagements'}</h4>
+                    <div className="mt-3 grid gap-3">
+                      {(section.content?.items || []).map((item, index) => (
+                        <div key={`${section.id}-${index}`} className="rounded-xl border border-[#eadcc2] bg-white p-3">
+                          <p className="font-medium text-[#2d241d]">{item.title || 'Titre'}</p>
+                          <p className="mt-1 text-sm text-[#5c4a3c]">{item.description || 'Description...'}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              case 'cta':
+                return (
+                  <div key={section.id} className={`${blockClasses} bg-[#f7efe3]`}>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#8a6e52]">CTA</p>
+                    <h4 className="mt-3 font-serif text-2xl text-[#2d241d]">{section.content?.heading || 'Une question ?'}</h4>
+                    <p className="mt-2 text-sm text-[#5c4a3c]">{section.content?.description || 'Description...'}</p>
+                    {section.content?.buttonText && (
+                      <button type="button" className="mt-4 rounded-full bg-[#2e1f16] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-white">{section.content.buttonText}</button>
+                    )}
+                  </div>
+                );
+              case 'image':
+                return (
+                  <div key={section.id} className={blockClasses}>
+                    <img src={section.content?.url || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80'} alt={section.content?.alt || 'Image'} className="h-64 w-full rounded-xl object-cover" />
+                    {section.content?.caption && <p className="mt-3 text-sm text-[#5c4a3c]">{section.content.caption}</p>}
+                  </div>
+                );
+              case 'gallery':
+                return (
+                  <div key={section.id} className={blockClasses}>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#8a6e52]">Galerie</p>
+                    <h4 className="mt-3 font-serif text-2xl text-[#2d241d]">{section.content?.title || 'Galerie'}</h4>
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                      {(section.content?.images || []).map((image, index) => (
+                        <img key={`${section.id}-${index}`} src={image.url} alt={image.alt || 'Image'} className="h-40 w-full rounded-xl object-cover" />
+                      ))}
+                    </div>
+                  </div>
+                );
+              default:
+                return null;
+            }
+          })
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex h-screen flex-col">
+      <header className="bg-[#2e1f16] p-4 text-white">
+        <div className="container mx-auto flex justify-between">
+          <Link to="/" className="text-2xl font-bold">
+            MonSiteAdmin
+          </Link>
+          <nav className="space-x-4">
+            <Link to="/" className="hover:underline">
+              Accueil
+            </Link>
+            <Link to="/profil" className="hover:underline">
+              Mon Profil
+            </Link>
+            <button
+              onClick={() => {
+                localStorage.removeItem('token');
+                setToken(null);
+                setError('Vous devez vous connecter.');
+                navigate('/connexion');
+              }}
+              className="rounded bg-[#e63946] px-4 py-2 text-sm font-semibold text-white hover:bg-[#d62839]"
+            >
+              Déconnexion
+            </button>
+          </nav>
+        </div>
+      </header>
+
+      <div className="container mx-auto flex flex-1">
+        <aside className="w-64 bg-[#f9f9f9] p-4 shadow-md">
+          <nav className="space-y-2">
+            {sidebarSections.map((section) => (
+              <button
+                key={section.key}
+                onClick={() => setActiveSection(section.key)}
+                className={`flex w-full items-center rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all ${
+                  activeSection === section.key
+                    ? 'bg-[#e2e8f0] text-[#2d3748]'
+                    : 'text-[#4a5568] hover:bg-[#edf2f7]'
+                }`}
+              >
+                {section.label}
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        <main className="flex-1 p-4">
+          {error && <div className="mb-4 rounded bg-[#f8d7da] p-3 text-[#721c24]">{error}</div>}
+          {notice && <div className="mb-4 rounded bg-[#d1e7dd] p-3 text-[#0f5132]">{notice}</div>}
+
+          {activeSection === 'overview' && (
+            <div>
+              <h2 className="mb-4 text-2xl font-bold">Vue d’ensemble</h2>
+              <p className="mb-4 text-gray-700">Bienvenue sur le tableau de bord administrateur.</p>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="rounded-lg bg-white p-4 shadow">
+                  <h3 className="mb-2 text-lg font-semibold">Statistiques</h3>
+                  <p className="text-gray-700">Aperçu des statistiques clés.</p>
+                </div>
+                <div className="rounded-lg bg-white p-4 shadow">
+                  <h3 className="mb-2 text-lg font-semibold">Activité récente</h3>
+                  <p className="text-gray-700">Dernières actions sur le site.</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeSection === 'orders' && (
+            <div>
+              <h2 className="mb-4 text-2xl font-bold">Commandes</h2>
+              <div className="space-y-4">
+                {orders.length === 0 ? (
+                  <p className="text-gray-500">Aucune commande trouvée.</p>
+                ) : (
+                  orders.map((order) => (
+                    <div key={order.id} className="rounded-lg bg-white p-4 shadow">
+                      <div className="flex justify-between">
+                        <h3 className="text-lg font-semibold">{`Commande #${order.id}`}</h3>
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusClasses[getOrderStatus(order)]}`}>
+                          {getOrderStatus(order)}
+                        </span>
+                      </div>
+                      <div className="mt-2 text-gray-700">
+                        <p>{`Montant total: ${formatCurrency(getOrderValue(order))}`}</p>
+                        <p>{`Date: ${new Date(order.createdAt).toLocaleDateString('fr-FR')}`}</p>
+                      </div>
+                      <div className="mt-4 flex gap-2">
+                        <Link
+                          to={`/admin/commandes/${order.id}`}
+                          className="flex-1 rounded bg-[#2e1f16] px-4 py-2 text-center text-sm font-semibold text-white hover:bg-[#2c1f15]"
+                        >
+                          Voir la commande
+                        </Link>
+                        <button
+                          onClick={async () => {
+                            if (!token) return;
+                            try {
+                              await trackShipment(order.id, token);
+                              setNotice('Le suivi de l’expédition a été mis à jour.');
+                              await loadDashboard();
+                            } catch (error) {
+                              setError(error.message || 'Erreur lors de la mise à jour du suivi.');
+                            }
+                          }}
+                          className="flex-1 rounded bg-[#f97316] px-4 py-2 text-center text-sm font-semibold text-white hover:bg-[#d65e10]"
+                        >
+                          {order.trackingNumber ? 'Mettre à jour le suivi' : 'Suivre l’expédition'}
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
+          {activeSection === 'shipping' && (
+            <div>
+              <h2 className="mb-4 text-2xl font-bold">Expéditions</h2>
+              <div className="space-y-4">
+                {shipments.length === 0 ? (
+                  <p className="text-gray-500">Aucune expédition trouvée.</p>
+                ) : (
+                  shipments.map((shipment) => (
+                    <div key={shipment.id} className="rounded-lg bg-white p-4 shadow">
+                      <div className="flex justify-between">
+                        <h3 className="text-lg font-semibold">{`Expédition #${shipment.id}`}</h3>
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusClasses[shipment.status]}`}>
+                          {shipment.status}
+                        </span>
+                      </div>
+                      <div className="mt-2 text-gray-700">
+                        <p>{`Référence: ${shipment.reference}`}</p>
+                        <p>{`Poids: ${shipment.weight}g`}</p>
+                        <p>{`Date: ${new Date(shipment.createdAt).toLocaleDateString('fr-FR')}`}</p>
+                      </div>
+                      <div className="mt-4 flex gap-2">
+                        <Link
+                          to={`/admin/expeditions/${shipment.id}`}
+                          className="flex-1 rounded bg-[#2e1f16] px-4 py-2 text-center text-sm font-semibold text-white hover:bg-[#2c1f15]"
+                        >
+                          Voir l’expédition
+                        </Link>
+                        <button
+                          onClick={async () => {
+                            if (!token) return;
+                            try {
+                              await downloadShipmentLabel(shipment.id, token);
+                              setNotice('L’étiquette d’expédition a été téléchargée.');
+                            } catch (error) {
+                              setError(error.message || 'Erreur lors du téléchargement de l’étiquette.');
+                            }
+                          }}
+                          className="flex-1 rounded bg-[#f97316] px-4 py-2 text-center text-sm font-semibold text-white hover:bg-[#d65e10]"
+                        >
+                          Télécharger l’étiquette
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
+          {activeSection === 'products' && (
+            <div>
+              <h2 className="mb-4 text-2xl font-bold">Produits</h2>
+              <div className="space-y-4">
+                {products.length === 0 ? (
+                  <p className="text-gray-500">Aucun produit trouvé.</p>
+                ) : (
+                  products.map((product) => (
+                    <div key={product.id} className="rounded-lg bg-white p-4 shadow">
+                      <div className="flex justify-between">
+                        <h3 className="text-lg font-semibold">{product.nom || product.title}</h3>
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusClasses[product.status]}`}>
+                          {product.status}
+                        </span>
+                      </div>
+                      <div className="mt-2 text-gray-700">
+                        <p>{`Prix: ${formatCurrency(product.prix)}`}</p>
+                        <p>{`Stock: ${product.stock} unités`}</p>
+                        <p>{`Date d’ajout: ${new Date(product.createdAt).toLocaleDateString('fr-FR')}`}</p>
+                      </div>
+                      <div className="mt-4 flex gap-2">
+                        <Link
+                          to={`/admin/produits/${product.id}`}
+                          className="flex-1 rounded bg-[#2e1f16] px-4 py-2 text-center text-sm font-semibold text-white hover:bg-[#2c1f15]"
+                        >
+                          Voir le produit
+                        </Link>
+                        <button
+                          onClick={async () => {
+                            if (!token) return;
+                            try {
+                              await updateAdminProduct(product.id, token, { stock: product.stock + 1 });
+                              setNotice('Le stock du produit a été mis à jour.');
+                              await loadDashboard();
+                            } catch (error) {
+                              setError(error.message || 'Erreur lors de la mise à jour du produit.');
+                            }
+                          }}
+                          className="flex-1 rounded bg-[#f97316] px-4 py-2 text-center text-sm font-semibold text-white hover:bg-[#d65e10]"
+                        >
+                          Ajouter au stock
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
+          {activeSection === 'pages' && (
+            <div>
+              <h2 className="mb-4 text-2xl font-bold">Pages</h2>
+              <div className="space-y-4">
+                {pages.length === 0 ? (
+                  <p className="text-gray-500">Aucune page trouvée.</p>
+                ) : (
+                  pages.map((page) => (
+                    <div key={page.id} className="rounded-lg bg-white p-4 shadow">
+                      <div className="flex justify-between">
+                        <h3 className="text-lg font-semibold">{page.title}</h3>
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusClasses[getPageStatus(page)]}`}>
+                          {getPageStatus(page)}
+                        </span>
+                      </div>
+                      <div className="mt-2 text-gray-700">
+                        <p>{`Slug: ${page.slug}`}</p>
+                        <p>{`Date de création: ${new Date(page.createdAt).toLocaleDateString('fr-FR')}`}</p>
+                      </div>
+                      <div className="mt-4 flex gap-2">
+                        <Link
+                          to={`/admin/pages/${page.id}`}
+                          className="flex-1 rounded bg-[#2e1f16] px-4 py-2 text-center text-sm font-semibold text-white hover:bg-[#2c1f15]"
+                        >
+                          Voir la page
+                        </Link>
+                        <button
+                          onClick={async () => {
+                            if (!token) return;
+                            try {
+                              await publishAdminPage(page.id, token);
+                              setNotice('La page a été publiée.');
+                              await loadDashboard();
+                            } catch (error) {
+                              setError(error.message || 'Erreur lors de la publication de la page.');
+                            }
+                          }}
+                          className="flex-1 rounded bg-[#f97316] px-4 py-2 text-center text-sm font-semibold text-white hover:bg-[#d65e10]"
+                        >
+                          Publier
+                        </button>
+                        <button
+                          onClick={() => openPageBuilder(page)}
+                          className="rounded bg-[#f97316] px-3 py-1 text-xs font-semibold text-white hover:bg-[#d65e10]"
+                        >
+                          Éditer le contenu
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
+          {activeSection === 'users' && (
+            <div>
+              <h2 className="mb-4 text-2xl font-bold">Utilisateurs</h2>
+              <div className="space-y-4">
+                {users.length === 0 ? (
+                  <p className="text-gray-500">Aucun utilisateur trouvé.</p>
+                ) : (
+                  users.map((user) => (
+                    <div key={user.id} className="rounded-lg bg-white p-4 shadow">
+                      <div className="flex justify-between">
+                        <h3 className="text-lg font-semibold">{user.name}</h3>
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusClasses[user.role]}`}>
+                          {user.role}
+                        </span>
+                      </div>
+                      <div className="mt-2 text-gray-700">
+                        <p>{`Email: ${user.email}`}</p>
+                        <p>{`Téléphone: ${user.phone || 'Non renseigné'}`}</p>
+                        <p>{`Date d’inscription: ${new Date(user.createdAt).toLocaleDateString('fr-FR')}`}</p>
+                      </div>
+                      <div className="mt-4 flex gap-2">
+                        <Link
+                          to={`/admin/utilisateurs/${user.id}`}
+                          className="flex-1 rounded bg-[#2e1f16] px-4 py-2 text-center text-sm font-semibold text-white hover:bg-[#2c1f15]"
+                        >
+                          Voir l’utilisateur
+                        </Link>
+                        <button
+                          onClick={async () => {
+                            if (!token) return;
+                            try {
+                              await updateAdminUser(user.id, token, { role: user.role === 'ADMIN' ? 'USER' : 'ADMIN' });
+                              setNotice('Le rôle de l’utilisateur a été mis à jour.');
+                              await loadDashboard();
+                            } catch (error) {
+                              setError(error.message || 'Erreur lors de la mise à jour de l’utilisateur.');
+                            }
+                          }}
+                          className="flex-1 rounded bg-[#f97316] px-4 py-2 text-center text-sm font-semibold text-white hover:bg-[#d65e10]"
+                        >
+                          {user.role === 'ADMIN' ? 'Retirer les droits d\'admin' : 'Donner les droits d\'admin'}
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
+          {activeSection === 'media' && (
+            <div>
+              <h2 className="mb-4 text-2xl font-bold">Médias</h2>
+              <div className="space-y-4">
+                <div className="rounded-lg bg-white p-4 shadow">
+                  <h3 className="mb-2 text-lg font-semibold">Bibliothèque de médias</h3>
+                  <p className="text-gray-700">Gérez vos fichiers médias ici.</p>
+                </div>
+                <div className="rounded-lg bg-white p-4 shadow">
+                  <h3 className="mb-2 text-lg font-semibold">Téléversement de fichiers</h3>
+                  <input
+                    type="file"
+                    onChange={async (event) => {
+                      const files = event.target.files;
+                      if (files.length === 0) return;
+                      try {
+                        setError('');
+                        const formData = new FormData();
+                        Array.from(files).forEach((file) => {
+                          formData.append('files', file);
+                        });
+                        await presignUpload(token, formData);
+                        setNotice('Fichiers téléversés avec succès.');
+                        await loadDashboard();
+                      } catch (error) {
+                        setError(error.message || 'Erreur lors du téléversement des fichiers.');
+                      }
+                    }}
+                    className="mt-2 block w-full rounded border border-gray-300 p-2 text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeSection === 'pages' && (
+            <div>
+              <h2 className="mb-4 text-2xl font-bold">Gestion des pages</h2>
+              <div className="space-y-4">
+                <div className="rounded-lg bg-white p-4 shadow">
+                  <h3 className="mb-2 text-lg font-semibold">Aperçu des pages</h3>
+                  {pages.length === 0 ? (
+                    <p className="text-gray-500">Aucune page trouvée.</p>
+                  ) : (
+                    <ul className="space-y-2">
+                      {pages.map((page) => (
+                        <li key={page.id} className="flex justify-between rounded-lg bg-[#f9f9f9] p-3 shadow">
+                          <div>
+                            <p className="text-sm font-medium text-[#2d241d]">{page.title}</p>
+                            <p className="text-xs text-gray-500">{`Slug: ${page.slug}`}</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Link
+                              to={`/admin/pages/${page.id}`}
+                              className="rounded bg-[#2e1f16] px-3 py-1 text-xs font-semibold text-white hover:bg-[#2c1f15]"
+                            >
+                              Modifier
+                            </Link>
+                            <button
+                              onClick={async () => {
+                                if (!token) return;
+                                try {
+                                  await deleteAdminPage(page.id, token);
+                                  setNotice('La page a été supprimée.');
+                                  await loadDashboard();
+                                } catch (error) {
+                                  setError(error.message || 'Erreur lors de la suppression de la page.');
+                                }
+                              }}
+                              className="rounded bg-[#e63946] px-3 py-1 text-xs font-semibold text-white hover:bg-[#d62839]"
+                            >
+                              Supprimer
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
+                <div className="rounded-lg bg-white p-4 shadow">
+                  <h3 className="mb-2 text-lg font-semibold">Créer une nouvelle page</h3>
+                  <form
+                    onSubmit={async (event) => {
+                      event.preventDefault();
+                      if (!token) return;
+
+                      const title = event.target.title.value.trim();
+                      const slug = event.target.slug.value.trim();
+                      const content = event.target.content.value.trim();
+
+                      if (!title) {
+                        setError('Le titre de la page est obligatoire.');
+                        return;
+                      }
+
+                      try {
+                        setError('');
+                        const payload = {
+                          title,
+                          slug: slug || toSlug(title),
+                          content,
+                          published: false,
+                        };
+
+                        await createAdminPage(token, payload);
+                        setNotice('La page a été créée.');
+                        await loadDashboard();
+                      } catch (submitError) {
+                        setError(submitError.message || 'La création de la page a échoué.');
+                      }
+                    }}
+                    className="space-y-4"
+                  >
+                    <div>
+                      <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                        Titre de la page
+                      </label>
+                      <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        required
+                        className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-[#2e1f16] focus:ring-[#2e1f16] sm:text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="slug" className="block text-sm font-medium text-gray-700">
+                        Slug (URL)
+                      </label>
+                      <input
+                        type="text"
+                        id="slug"
+                        name="slug"
+                        className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-[#2e1f16] focus:ring-[#2e1f16] sm:text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+                        Contenu
+                      </label>
+                      <textarea
+                        id="content"
+                        name="content"
+                        rows="4"
+                        className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-[#2e1f16] focus:ring-[#2e1f16] sm:text-sm"
+                      />
+                    </div>
+                    <div className="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setActiveSection('pages')}
+                        className="rounded bg-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-200"
+                      >
+                        Annuler
+                      </button>
+                      <button
+                        type="submit"
+                        className="rounded bg-[#2e1f16] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2c1f15]"
+                      >
+                        Créer la page
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeSection === 'builder' && (
+            <div>
+              <h2 className="mb-4 text-2xl font-bold">Constructeur de pages</h2>
+              <div className="space-y-4">
+                <div className="rounded-lg bg-white p-4 shadow">
+                  <h3 className="mb-2 text-lg font-semibold">Pile des sections</h3>
+                  {renderBuilderStack()}
+                </div>
+
+                <div className="rounded-lg bg-white p-4 shadow">
+                  <h3 className="mb-2 text-lg font-semibold">Aperçu en direct</h3>
+                  {renderBuilderPreview()}
+                </div>
+
+                <div className="rounded-lg bg-white p-4 shadow">
+                  <h3 className="mb-2 text-lg font-semibold">Sections disponibles</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {['hero', 'heading', 'text', 'richText', 'cta', 'features', 'image', 'gallery'].map((type) => (
+                      <button
+                        key={type}
+                        onClick={() => handleAddBuilderSection(type)}
+                        className="flex items-center justify-center rounded-lg bg-[#f9f9f9] p-4 text-center text-sm font-semibold text-[#2d241d] shadow-sm transition-all hover:bg-[#f1f1f1]"
+                      >
+                        {type === 'richText' ? 'Texte enrichi' : type.charAt(0).toUpperCase() + type.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="rounded-lg bg-white p-4 shadow">
+                  <h3 className="mb-2 text-lg font-semibold">Paramètres de la page</h3>
+                  <form
+                    onSubmit={handleBuilderPageSubmit}
+                    className="space-y-4"
+                  >
+                    <div>
+                      <label htmlFor="pageTitle" className="block text-sm font-medium text-gray-700">
+                        Titre de la page
+                      </label>
+                      <input
+                        type="text"
+                        id="pageTitle"
+                        name="title"
+                        value={builderPage.title}
+                        onChange={(e) => setBuilderPage((prev) => ({ ...prev, title: e.target.value }))}
+                        required
+                        className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-[#2e1f16] focus:ring-[#2e1f16] sm:text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="pageSlug" className="block text-sm font-medium text-gray-700">
+                        Slug (URL)
+                      </label>
+                      <input
+                        type="text"
+                        id="pageSlug"
+                        name="slug"
+                        value={builderPage.slug}
+                        onChange={(e) => setBuilderPage((prev) => ({ ...prev, slug: e.target.value }))}
+                        className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-[#2e1f16] focus:ring-[#2e1f16] sm:text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="pageDescription" className="block text-sm font-medium text-gray-700">
+                        Description SEO
+                      </label>
+                      <textarea
+                        id="pageDescription"
+                        name="seoDescription"
+                        value={builderPage.seoDescription}
+                        onChange={(e) => setBuilderPage((prev) => ({ ...prev, seoDescription: e.target.value }))}
+                        rows="3"
+                        className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-[#2e1f16] focus:ring-[#2e1f16] sm:text-sm"
+                      />
+                    </div>
+                    <div className="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setActiveSection('pages')}
+                        className="rounded bg-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-200"
+                      >
+                        Annuler
+                      </button>
+                      <button
+                        type="submit"
+                        className="rounded bg-[#2e1f16] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2c1f15]"
+                      >
+                        Enregistrer les paramètres
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+}

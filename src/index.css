@@ -1,70 +1,104 @@
-/* Reset global */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@import 'tailwindcss';
 
-/* Thème Maison Heness */
-:root {
-  --marron: #6a4e23;
-  --beige: #fff8f0;
-  --noir: #1e1e1e;
-  --blanc: #ffffff;
-  --gris: #e0e0e0;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-body {
-  font-family: 'Segoe UI', sans-serif, 'Montserrat';
-  background-color: var(--beige);
-  color: var(--noir);
-  line-height: 1.6;
-  min-height: 100vh;
-  width: 100%;
-  overflow-x: hidden;
-}
+@layer base {
+  /* Reset global */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-/* Structure principale */
-.app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
+  /* Thème Maison Heness */
+  :root {
+    --marron: #6a4e23;
+    --beige: #fff8f0;
+    --noir: #1e1e1e;
+    --blanc: #ffffff;
+    --gris: #e0e0e0;
 
-/* Liens */
-a {
-  color: var(--marron);
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    color: #1f1a16;
+    background: #f6f0e6;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-a:hover {
-  color: #4e3618;
-  text-decoration: underline;
-}
+  html {
+    scroll-behavior: smooth;
+  }
 
-/* Titres */
-h1, h2, h3 {
-  color: var(--marron);
-  margin-bottom: 1rem;
-}
+  body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    background: radial-gradient(circle at top, rgba(201, 168, 106, 0.14), transparent 32%), #f6f0e6;
+    color: #1f1a16;
+  }
 
-/* Boutons généraux */
-button {
-  border: none;
-  background-color: var(--marron);
-  color: var(--blanc);
-  padding: 0.6em 1.2em;
-  border-radius: 5px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
+  /* Structure principale */
+  .app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
 
-button:hover {
-  background-color: #4e3618;
-  transform: translateY(-2px);
+  /* Liens */
+  a {
+    color: var(--marron);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  a:hover {
+    color: #4e3618;
+    text-decoration: underline;
+  }
+
+  /* Titres */
+  h1,
+  h2,
+  h3 {
+    color: var(--marron);
+    margin-bottom: 1rem;
+  }
+
+  /* Boutons généraux */
+  button {
+    border: none;
+    background-color: var(--marron);
+    color: var(--blanc);
+    padding: 0.6em 1.2em;
+    border-radius: 5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #4e3618;
+    transform: translateY(-2px);
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
 }

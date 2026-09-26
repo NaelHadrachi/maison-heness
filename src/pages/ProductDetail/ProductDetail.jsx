@@ -1,122 +1,139 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import produits from '../../data/produits';
-import styles from './ProductDetail.module.css';
+import { fetchProductById } from '../../services/api';
+import { useStore } from '../../context/StoreContext';
 
-/**
- * Page Produit — redirection vers boutique externe (deep-link)
- * - Aucune quantité, aucun panier local
- * - Un seul CTA : "Commander sur la boutique" (nouvel onglet)
- * - Zoom image + carrousel associés conservés
- * - Pas d'ID/mot de passe en front (voir notes plus bas)
- */
 export default function ProductDetail() {
   const { id } = useParams();
-  const product = produits.find(p => p.id === id) || null;
+  const { addToCart } = useStore();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [lightbox, setLightbox] = useState(false);
 
-  const [lightbox, setLightbox] = React.useState(false);
+  useEffect(() => {
+    let ignore = false;
 
-  React.useEffect(() => {
+    const loadProduct = async () => {
+      try {
+        const item = await fetchProductById(id);
+        if (!ignore) {
+          setProduct(item || produits.find((p) => String(p.id) === String(id)) || null);
+        }
+      } catch {
+        if (!ignore) {
+          setProduct(produits.find((p) => String(p.id) === String(id)) || null);
+        }
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    };
+
+    loadProduct();
+    return () => { ignore = true; };
+  }, [id]);
+
+  useEffect(() => {
     if (!product) return;
     const prev = document.title;
     document.title = `${product.nom} – Maison Heness`;
     return () => { document.title = prev; };
   }, [product]);
 
-  // Raccourci clavier : Esc pour fermer le zoom
-  React.useEffect(() => {
-    const onKey = (e) => { if (lightbox && e.key === 'Escape') setLightbox(false); };
+  useEffect(() => {
+    const onKey = (e) => {
+      if (lightbox && e.key === 'Escape') setLightbox(false);
+    };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [lightbox]);
 
-  if (!product) {
+  if (loading) {
     return (
-      <div className={styles.page}>
-        <div className={styles.sheet}>
-          <div className={styles.errorBox}>
-            <h2>Produit introuvable</h2>
-            <p>Le produit demandé n'existe pas / plus.</p>
-            <Link className={styles.backBtn} to="/boutique">← Retour à la boutique</Link>
-          </div>
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="rounded-[28px] border border-[#eadcc2] bg-[#fffdf8] p-12 text-center shadow-[0_18px_40px_rgba(80,55,30,0.07)]">
+          <h2 className="font-serif text-3xl text-[#2d241d]">Chargement du produit...</h2>
         </div>
       </div>
     );
   }
 
-  // 1) priorise le lien du produit (p.lien / p.url)
-  // 2) sinon utilise la variable .env VITE_SHOP_URL
-  const externalUrl = product.lien || product.url || import.meta.env.VITE_SHOP_URL || null;
+  if (!product) {
+    return (
+      <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="rounded-[28px] border border-[#eadcc2] bg-[#fffdf8] p-12 text-center shadow-[0_18px_40px_rgba(80,55,30,0.07)]">
+          <h2 className="font-serif text-3xl text-[#2d241d]">Produit introuvable</h2>
+          <p className="mt-3 text-[#5c4a3c]">Le produit demandé n’existe pas / plus.</p>
+          <Link className="mt-5 inline-flex rounded-full bg-[#2c1f19] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#4d3629]" to="/boutique">← Retour à la boutique</Link>
+        </div>
+      </div>
+    );
+  }
 
-  const related = produits
-    .filter(p => p.categorie === product.categorie && p.id !== product.id)
-    .slice(0, 10);
+  const externalUrl = product.lien || product.url || import.meta.env.VITE_SHOP_URL || null;
+  const related = produits.filter((p) => p.categorie === product.categorie && p.id !== product.id).slice(0, 10);
 
   return (
-    <div className={styles.page}>
-      {/* Fil d’Ariane */}
-      <nav className={styles.breadcrumb} aria-label="Fil d’Ariane">
-        <Link to="/">Accueil</Link><span>›</span>
-        <Link to="/boutique">Boutique</Link><span>›</span>
-        <Link to={`/boutique#${product.categorie}`}>{labelCat(product.categorie)}</Link><span>›</span>
-        <span aria-current="page">{product.nom}</span>
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      <nav className="mb-8 flex flex-wrap items-center gap-2 text-sm text-[#6d5a4d]" aria-label="Fil d’Ariane">
+        <Link to="/" className="hover:text-[#2f221b]">Accueil</Link>
+        <span>›</span>
+        <Link to="/boutique" className="hover:text-[#2f221b]">Boutique</Link>
+        <span>›</span>
+        <Link to={`/boutique#${product.categorie}`} className="hover:text-[#2f221b]">{labelCat(product.categorie)}</Link>
+        <span>›</span>
+        <span aria-current="page" className="text-[#2f221b]">{product.nom}</span>
       </nav>
 
-      <article className={styles.sheet}>
-        {/* Media */}
-        <div className={styles.mediaCol}>
-          <button className={styles.media} onClick={() => setLightbox(true)} aria-label="Agrandir l’image">
+      <article className="grid gap-8 rounded-[32px] border border-[#eadcc2] bg-[#fffdf8] p-5 shadow-[0_18px_40px_rgba(80,55,30,0.07)] md:p-8 lg:grid-cols-[1.1fr_1fr]">
+        <div className="overflow-hidden rounded-[24px] bg-[#f4ead8]">
+          <button className="group relative flex h-full w-full items-center justify-center overflow-hidden bg-[#f4ead8] p-4 text-left" onClick={() => setLightbox(true)} aria-label="Agrandir l’image">
             {product.image ? (
-              <img src={product.image} alt={product.nom} loading="lazy" />
+              <img src={product.image} alt={product.nom} loading="lazy" className="max-h-[540px] w-full rounded-[18px] object-cover" />
             ) : (
-              <div className={styles.fallback}><span>{short(product.nom)}</span></div>
+              <div className="flex h-[440px] w-full items-center justify-center rounded-[18px] bg-[#e9dcc0] text-4xl font-semibold text-[#4a3529]">
+                <span>{short(product.nom)}</span>
+              </div>
             )}
-            <span className={styles.zoomHint}>Cliquer pour zoomer</span>
+            <span className="absolute bottom-5 left-5 rounded-full bg-[#1d120d]/70 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-[#f3e1bc]">Cliquer pour zoomer</span>
           </button>
         </div>
 
-        {/* Infos */}
-        <div className={styles.infoCol}>
-          <h1 className={styles.title}>{product.nom}</h1>
-          <p className={styles.desc}>{product.description}</p>
+        <div className="flex flex-col justify-center">
+          <h1 className="font-serif text-4xl font-bold text-[#2d241d] md:text-5xl">{product.nom}</h1>
+          <p className="mt-5 text-base leading-8 text-[#5c4a3c]">{product.description}</p>
 
-          <div className={styles.ctaRow}>
-            <div className={styles.price}>{Number(product.prix).toFixed(2)} €</div>
+          <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="text-3xl font-bold text-[#2d241d]">{Number(product.prix).toFixed(2)} €</div>
+            <button type="button" className="rounded-full bg-[#2c1f19] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#4d3629]" onClick={() => addToCart(product, 1)}>
+              Ajouter au panier
+            </button>
             {externalUrl && (
-              <a
-                className={styles.externalBtn}
-                href={externalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Commander sur la boutique"
-              >
+              <a className="rounded-full border border-[#d9cbb2] px-6 py-3 text-sm font-semibold text-[#4a3529] transition hover:border-[#b98f5b] hover:text-[#2f221b]" href={externalUrl} target="_blank" rel="noopener noreferrer" aria-label="Commander sur la boutique">
                 Commander sur la boutique →
               </a>
             )}
           </div>
 
-          <div className={styles.metaRow}>
-            <span className={styles.badgeCat}>{labelCat(product.categorie)}</span>
-            {product.badge && <span className={styles.badge}>{product.badge}</span>}
+          <div className="mt-6 flex flex-wrap gap-3">
+            <span className="rounded-full bg-[#f3e8d4] px-3 py-1 text-xs font-medium uppercase tracking-[0.12em] text-[#5d4638]">{labelCat(product.categorie)}</span>
+            {product.badge && <span className="rounded-full bg-[#e8d4a5] px-3 py-1 text-xs font-medium uppercase tracking-[0.12em] text-[#3f2d22]">{product.badge}</span>}
           </div>
         </div>
       </article>
 
-      {/* Produits associés — carrousel */}
       {related.length > 0 && (
-        <section className={styles.related}>
-          <h2>Vous aimerez aussi</h2>
-          <div className={styles.carousel} tabIndex={0} aria-label="Produits associés">
-            {related.map(p => (
-              <Link key={p.id} to={`/produit/${p.id}`} className={styles.relCard}>
-                <div className={styles.relMedia}>
-                  {p.image ? <img src={p.image} alt={p.nom} loading="lazy" /> : (
-                    <div className={styles.relFallback}><span>{short(p.nom)}</span></div>
-                  )}
+        <section className="mt-12">
+          <h2 className="mb-6 font-serif text-3xl font-bold text-[#2d241d]">Vous aimerez aussi</h2>
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4" tabIndex={0} aria-label="Produits associés">
+            {related.map((p) => (
+              <Link key={p.id} to={`/produit/${p.id}`} className="overflow-hidden rounded-[24px] border border-[#eadcc2] bg-[#fffdf8] shadow-[0_18px_40px_rgba(80,55,30,0.05)] transition hover:-translate-y-1">
+                <div className="h-52 overflow-hidden bg-[#f4ead8]">
+                  {p.image ? <img src={p.image} alt={p.nom} loading="lazy" className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center bg-[#e9dcc0] text-2xl font-semibold text-[#4a3529]">{short(p.nom)}</div>}
                 </div>
-                <div className={styles.relInfo}>
-                  <h3>{p.nom}</h3>
-                  <span className={styles.relPrice}>{Number(p.prix).toFixed(2)} €</span>
+                <div className="p-4">
+                  <h3 className="font-serif text-2xl text-[#2d241d]">{p.nom}</h3>
+                  <span className="mt-2 block text-sm font-semibold text-[#5c4a3c]">{Number(p.prix).toFixed(2)} €</span>
                 </div>
               </Link>
             ))}
@@ -124,16 +141,10 @@ export default function ProductDetail() {
         </section>
       )}
 
-      {/* Lightbox plein écran */}
       {lightbox && product.image && (
-        <div className={styles.lightbox} role="dialog" aria-modal="true" onClick={() => setLightbox(false)}>
-          <img
-            src={product.image}
-            alt={product.nom}
-            className={styles.lightboxImg}
-            onClick={(e) => e.stopPropagation()}
-          />
-          <button className={styles.closeLb} onClick={() => setLightbox(false)} aria-label="Fermer">×</button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1d120d]/80 p-6" role="dialog" aria-modal="true" onClick={() => setLightbox(false)}>
+          <img src={product.image} alt={product.nom} className="max-h-[85vh] max-w-[90vw] rounded-[20px] object-contain shadow-[0_20px_60px_rgba(0,0,0,0.35)]" onClick={(e) => e.stopPropagation()} />
+          <button className="absolute right-5 top-5 text-4xl text-white" onClick={() => setLightbox(false)} aria-label="Fermer">×</button>
         </div>
       )}
     </div>
@@ -149,6 +160,7 @@ function labelCat(key) {
   };
   return map[key] ?? key;
 }
+
 function short(nom) {
   const parts = nom.split(' - ');
   return (parts[1] || parts[0] || '').slice(0, 28);

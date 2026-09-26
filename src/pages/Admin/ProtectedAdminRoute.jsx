@@ -1,41 +1,24 @@
 import { Navigate } from 'react-router-dom';
+import { ADMIN_TOKEN_KEY, ADMIN_PROFILE_KEY } from '../../utils/adminHelpers';
 
-export default function ProtectedAdminRoute({
-  children
-}) {
-  const session =
-    localStorage.getItem(
-      'maison_heness_admin_session'
-    );
+export default function ProtectedAdminRoute({ children }) {
+  const token = localStorage.getItem(ADMIN_TOKEN_KEY);
+  const rawProfile = localStorage.getItem(ADMIN_PROFILE_KEY);
 
-  const token =
-    localStorage.getItem(
-      'maison_heness_admin_token'
-    );
+  let isAdmin = false;
+  try {
+    const profile = JSON.parse(rawProfile || '{}');
+    if (token && profile && profile.role === 'ADMIN') {
+      isAdmin = true;
+    }
+  } catch {
+    isAdmin = false;
+  }
 
-  /*
-    TEMPORAIRE :
-
-    Quand ton collègue aura terminé le rôle ADMIN,
-    on vérifiera réellement le JWT + /api/me.
-
-    Pour l'instant :
-    - session réussie
-    OU
-    - JWT présent
-  */
-
-  const isAuthenticated =
-    session === 'true' ||
-    Boolean(token);
-
-  if (!isAuthenticated) {
-    return (
-      <Navigate
-        to="/admin/login"
-        replace
-      />
-    );
+  if (!isAdmin) {
+    localStorage.removeItem(ADMIN_TOKEN_KEY);
+    localStorage.removeItem(ADMIN_PROFILE_KEY);
+    return <Navigate to="/admin/login" replace />;
   }
 
   return children;

@@ -137,6 +137,34 @@ html,body{background:var(--sable);color:var(--encre);}
 .cta{font-size:.95rem;color:var(--cafe);transition:transform .2s ease}
 .card:hover .cta{transform:translateX(4px)}
 
+/* PRODUCT ACTIONS */
+.product-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.cart-add {
+  background: linear-gradient(135deg, #6a4e23, #90704b);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.7rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: 0 10px 20px rgba(90, 61, 36, 0.15);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(201, 168, 106, 0.12);
+  color: var(--cafe);
+  font-weight: 700;
+}
+
 /* EMPTY */
 .empty{
   grid-column:1 / -1;text-align:center;color:var(--gris);padding:44px;

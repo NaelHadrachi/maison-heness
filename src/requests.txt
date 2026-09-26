@@ -1,0 +1,456 @@
+curl -X POST http://88.185.44.213:17777/api/products/categories \
+  -H 'Content-Type: application/json' \
+  -d '{"name": "Vinaigres de Grenade", "slug": "vinaigres-de-grenade"}'
+
+curl -X POST http://88.185.44.213:17777/api/products/categories \
+  -H 'Content-Type: application/json' \
+  -d '{"name": "Vinaigres Balsamiques", "slug": "vinaigres-balsamiques"}'
+
+curl -X POST http://88.185.44.213:17777/api/products/categories \
+  -H 'Content-Type: application/json' \
+  -d '{"name": "Huiles d'\''olive", "slug": "huiles-dolive"}'
+
+curl -X POST http://88.185.44.213:17777/api/products/categories \
+  -H 'Content-Type: application/json' \
+  -d '{"name": "Coffrets", "slug": "coffrets"}'
+
+curl -X POST http://88.185.44.213:17777/api/products/categories \
+  -H 'Content-Type: application/json' \
+  -d '{"name": "Épicerie fine", "slug": "epicerie-fine"}'
+
+  _________________________________________________________________
+
+  # Vinaigre de Grenade - Original
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "vinaigre-nature",
+    "name": "Vinaigre de Grenade - Original",
+    "description": "Vinaigre de grenade pur, vieilli naturellement pour une saveur fruitée et équilibrée.",
+    "price": 9.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/original.jpeg",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmbs90001zo65tm128dra"
+  }'
+
+# Vinaigre de Grenade - Poivre de Tasmanie
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "vinaigre-poivre-tasmani",
+    "name": "Vinaigre de Grenade - Poivre de Tasmanie",
+    "description": "Alliance unique de grenade et de poivre rare de Tasmanie pour une touche épicée.",
+    "price": 9.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/poivre_tasmanie.jpeg",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmbs90001zo65tm128dra"
+  }'
+
+# Vinaigre de Grenade - Menthe orientale du jardin
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "vinaigre-menthe",
+    "name": "Vinaigre de Grenade - Menthe orientale du jardin",
+    "description": "Rafraîchissant avec des notes vives de menthe, parfait pour les salades d'\''été.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/menthe_orientale_jardin.jpeg",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmbs90001zo65tm128dra"
+  }'
+
+# Vinaigre de Grenade - Quatre Voleurs
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "vinaigre-quatre-voleurs",
+    "name": "Vinaigre de Grenade - Quatre Voleurs",
+    "description": "Recette traditionnelle aux herbes et épices inspirée du célèbre vinaigre des Quatre Voleurs.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/4voleurs.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmbs90001zo65tm128dra"
+  }'
+
+# Vinaigre de Grenade - Cerise confite
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "vinaigre-cerise-confite",
+    "name": "Vinaigre de Grenade - Cerise confite",
+    "description": "Harmonie sucrée-acidulée de grenade et de cerises confites.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/cerise.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmbs90001zo65tm128dra"
+  }'
+
+# Vinaigre de Grenade - Miel du Tarn
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "vinaigre-miel",
+    "name": "Vinaigre de Grenade - Miel du Tarn",
+    "description": "Onctuosité du miel du Tarn mariée à l'\''acidité de la grenade.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/miel_tarn.jpeg",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmbs90001zo65tm128dra"
+  }'
+
+# Vinaigre de Grenade - Framboise d'Ariège
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "vinaigre-framboise",
+    "name": "Vinaigre de Grenade - Framboise d'\''Ariège",
+    "description": "Éclat acidulé de framboise dans un vinaigre de grenade velouté.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/framboise.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmbs90001zo65tm128dra"
+  }'
+
+# Vinaigre de Grenade - Bâton de réglisse
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "vinaigre-reglisse",
+    "name": "Vinaigre de Grenade - Bâton de réglisse",
+    "description": "Notes douces et chaudes de réglisse pour une touche originale.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/reglisse.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmbs90001zo65tm128dra"
+  }'
+
+# Vinaigre de Grenade - Citrons confits
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "vinaigre-citron-confit",
+    "name": "Vinaigre de Grenade - Citrons confits",
+    "description": "Saveur intense et parfumée de citrons confits pour une touche méditerranéenne.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/citron.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmbs90001zo65tm128dra"
+  }'
+
+# Vinaigre de Grenade - Timut du Népal
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "vinaigre-timut",
+    "name": "Vinaigre de Grenade - Timut du Népal",
+    "description": "Poivre Timut du Népal pour des notes d'\''agrumes et d'\''épices.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/timut.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmbs90001zo65tm128dra"
+  }'
+
+# Vinaigre de Grenade - Vanille Bourbon
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "vinaigre-vanille",
+    "name": "Vinaigre de Grenade - Vanille Bourbon",
+    "description": "Gourmandise avec des arômes doux et chauds de vanille.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/vanille_bourbon.jpeg",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmbs90001zo65tm128dra"
+  }'
+
+# Vinaigre de Grenade - Fève Tonka des Caraïbes
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "vinaigre-tonka",
+    "name": "Vinaigre de Grenade - Fève Tonka des Caraïbes",
+    "description": "Saveurs chaudes et gourmandes de fève Tonka.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/feve_tonka.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmbs90001zo65tm128dra"
+  }'
+
+# Vinaigre de Grenade - Fraise Gariguette
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "vinaigre-fraise",
+    "name": "Vinaigre de Grenade - Fraise Gariguette",
+    "description": "Doux et fruité, avec l'\''équilibre parfait entre grenade et fraise.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/fraise_gariguette.jpeg",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmbs90001zo65tm128dra"
+  }'
+
+# Vinaigre Balsamique - Réglisse
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "balsamique-reglisse",
+    "name": "Vinaigre Balsamique - Réglisse",
+    "description": "Balsamique vieilli avec des notes douces de réglisse.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/reglisse.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmiqh0002zo65a5bvpb6p"
+  }'
+
+# Vinaigre Balsamique - Timut du Népal
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "balsamique-timut",
+    "name": "Vinaigre Balsamique - Timut du Népal",
+    "description": "Balsamique aux notes épicées et fruitées du poivre Timut.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/timut.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmiqh0002zo65a5bvpb6p"
+  }'
+
+# Vinaigre Balsamique - Fraise Bonbon
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "balsamique-fraise",
+    "name": "Vinaigre Balsamique - Fraise Bonbon",
+    "description": "Balsamique doux aux arômes de fraise mûre.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/fraise_bonbon.jpeg",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmiqh0002zo65a5bvpb6p"
+  }'
+
+# Vinaigre Balsamique - Menthe orientale du jardin
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "balsamique-menthe",
+    "name": "Vinaigre Balsamique - Menthe orientale du jardin",
+    "description": "Fraîcheur mentholée dans un balsamique onctueux.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/menthe.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmiqh0002zo65a5bvpb6p"
+  }'
+
+# Vinaigre Balsamique - Myrtille sauvage des Pyrénées
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "balsamique-myrtille",
+    "name": "Vinaigre Balsamique - Myrtille sauvage des Pyrénées",
+    "description": "Balsamique aux notes boisées et fruitées de myrtille.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/bernadouce.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmiqh0002zo65a5bvpb6p"
+  }'
+
+# Vinaigre Balsamique - Cerise confite
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "balsamique-cerise-griotte",
+    "name": "Vinaigre Balsamique - Cerise confite",
+    "description": "Équilibre parfait entre acidité et douceur fruitée.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/cerise.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmiqh0002zo65a5bvpb6p"
+  }'
+
+# Vinaigre Balsamique - Framboise d'Ariège
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "balsamique-framboise",
+    "name": "Vinaigre Balsamique - Framboise d'\''Ariège",
+    "description": "Balsamique aux arômes intenses de framboise.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/framboise.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmiqh0002zo65a5bvpb6p"
+  }'
+
+# Vinaigre Balsamique - Café torréfié
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "balsamique-cafe",
+    "name": "Vinaigre Balsamique - Café torréfié",
+    "description": "Notes torréfiées de café dans un balsamique velouté.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/uploads/1789489249419-il2w4t-cafe.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmiqh0002zo65a5bvpb6p"
+  }'
+
+# Vinaigre Balsamique - Cacao
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "balsamique-cacao",
+    "name": "Vinaigre Balsamique - Cacao",
+    "description": "Balsamique aux arômes riches et chocolatés de cacao.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/uploads/1789489249419-il2w4t-cafe.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmiqh0002zo65a5bvpb6p"
+  }'
+
+# Vinaigre Balsamique - Armagnac Napoléon
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "balsamique-armagnac",
+    "name": "Vinaigre Balsamique - Armagnac Napoléon",
+    "description": "Balsamique vieilli avec des notes chaudes d'\''Armagnac.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/napoleon.jpeg",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmiqh0002zo65a5bvpb6p"
+  }'
+
+# Vinaigre Balsamique - Fève Tonka des Caraïbes
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "balsamique-feve-tonka",
+    "name": "Vinaigre Balsamique - Fève Tonka des Caraïbes",
+    "description": "Gourmandise avec des arômes vanillés et amandés.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/feve_tonka.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmiqh0002zo65a5bvpb6p"
+  }'
+
+# Vinaigre Balsamique - Basilic du jardin
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "balsamique-basilic",
+    "name": "Vinaigre Balsamique - Basilic du jardin",
+    "description": "Fraîcheur du basilic dans un balsamique équilibré.",
+    "price": 7.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/basilique_jardin.jpeg",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cmiqh0002zo65a5bvpb6p"
+  }'
+
+# Huile d'olive - Nature
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "huile-nature",
+    "name": "Huile d'\''olive - Nature",
+    "description": "Huile d'\''olive extra vierge pressée à froid, fruitée et équilibrée.",
+    "price": 9.9,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/uploads/1789486333267-0gj7yg-maison.jpeg",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cnhd00003zo658xn3uk1j"
+  }'
+
+# Coffret 2 Bouteilles 10 cl
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "coffret-2-bouteilles",
+    "name": "Coffret 2 Bouteilles 10 cl",
+    "description": "Coffret élégant comprenant deux bouteilles de vinaigre ou d'\''huile au choix.",
+    "price": 14,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/uploads/1789489249298-yzfdu7-coffret210.png",
+    "badge": "Coffret",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cnsf40004zo65s8nua1b0"
+  }'
+
+# Coffret 3 Bouteilles 10cl
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "coffret-3-bouteilles",
+    "name": "Coffret 3 Bouteilles 10cl",
+    "description": "Coffret raffiné avec trois bouteilles pour un voyage gustatif complet.",
+    "price": 21,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/uploads/1789489249371-w8v2ir-coffret3.png",
+    "badge": "Coffret",
+    "status": "ACTIVE",
+    "categoryId": "cmu4cnsf40004zo65s8nua1b0"
+  }'
+
+# Café torréfié 100% Arabica
+curl -X POST http://88.185.44.213:17777/api/products \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "slug": "cafe-monde",
+    "name": "Café torréfié 100% Arabica",
+    "description": "Ce café équilibré et parfumé dévoile toute sa rondeur aux amateurs.",
+    "price": 7.6,
+    "stock": 50,
+    "image": "http://localhost:9000/maison-heness-products/uploads/1789489249419-il2w4t-cafe.png",
+    "badge": "",
+    "status": "ACTIVE",
+    "categoryId": "cmu4co64b0005zo65gerdf6k6"
+  }'
