@@ -1,6 +1,6 @@
 import produits from '../data/produits';
 
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://88.185.44.213:17777';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://maisonheness.com';
 export const API_URL = `${API_BASE_URL}/api`;
 
 const readFirstValue = (...values) => values.find((value) => value !== undefined && value !== null && value !== '');

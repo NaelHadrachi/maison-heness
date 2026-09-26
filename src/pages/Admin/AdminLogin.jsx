@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
-  'http://88.185.44.213:17777';
+  'https://maisonheness.com';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
